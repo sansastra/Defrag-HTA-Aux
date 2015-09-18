@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="jars">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jars/javagraphlib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/hamcrest-core-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/slf4j-api-1.7.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/slf4j-simple-1.7.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/junit-4.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/jsim.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/uncommons-maths-1.2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jars/gurobi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
