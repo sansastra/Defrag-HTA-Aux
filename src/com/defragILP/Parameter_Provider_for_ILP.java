@@ -1,16 +1,16 @@
 package com.defragILP;
 
 import com.auxiliarygraph.NetworkState;
-import com.auxiliarygraph.elements.LightPath;
-import com.auxiliarygraph.elements.Path;
+import com.auxiliarygraph.elements.*;
 import com.graph.elements.edge.EdgeElement;
 import com.graph.elements.vertex.VertexElement;
 import com.inputdata.InputParameters;
 import com.graph.path.PathElement;
 import com.inputdata.reader.ImportTopologyFromSNDFile;
+import com.launcher.Launcher;
 import com.launcher.SimulatorParameters;
 import com.auxiliarygraph.elements.Path;
-//import javafx.scene.shape.PathElement;
+import com.auxiliarygraph.elements.FiberLink;
 
 import java.util.*;
 
@@ -27,6 +27,7 @@ public class Parameter_Provider_for_ILP {
     Set<VertexElement> nodeElementsSet;
     List<VertexElement> nodeElementsList;
     Set<EdgeElement> links;
+    Map<Double, Connection> connectioTomap;
     //    int N;					// Number of nodes
      //   String[] nodenames;		// Names of the nodes according to the SNDlib file
 
@@ -47,7 +48,7 @@ public class Parameter_Provider_for_ILP {
         boolean[][] src_l;		// src_p[l][n] is true if link l has node n as source node
         boolean[][] dst_l;		// dst_p[l][n] is true if link l has node n as destination node
         int[][] linkNo;		// linkNo[i][j] stores the link number of link i-j, or -1 in case link i-j doesn't exist
-        int number_of_slots = 10;
+        int number_of_slots;
 
 
         // Routing
@@ -86,23 +87,25 @@ public class Parameter_Provider_for_ILP {
             int f=0;
             int s =0;
             int d =0;
-            int demand =0;
             VertexElement ver1 =nodeElementsList.get(0), ver2=nodeElementsList.get(0);
             List<LightPath> lightpaths;
             //InputParameters.getIfConnectiongEdge(node,node1)
             for (String node : nodelist) {
                 for (String node1 : nodelist) {
                     if (!node.equals(node1)) {
+                        int demand =0;
                          for (int i = 0; i < N; i++) {
                             if (nodeElementsList.get(i).getVertexID().equals(node))
                                 ver1 = nodeElementsList.get(i);
                             if (nodeElementsList.get(i).getVertexID().equals(node1))
                                 ver2 = nodeElementsList.get(i);
                         }
-                        lightpaths= NetworkState.getListOfLightPaths(ver1,ver2);
+                        lightpaths= NetworkState.getListOfLightPaths(ver1, ver2);
                         int num= lightpaths.size();
                         for (int i = 0; i < num; i++) {
-                            demand += lightpaths.get(i).getNumberOfMiniGridsUsedAlongLP();
+                            connectioTomap= lightpaths.get(i).getConnectionMap();
+                           for (Map.Entry<Double,Connection> entry : connectioTomap.entrySet())
+                              demand += entry.getValue().getBw();
                         }
                         Demand[f] = demand;
                         flowNo[s][d] = f;
@@ -122,6 +125,7 @@ public class Parameter_Provider_for_ILP {
             links = InputParameters.getSetOfEdges();
             L = links.size();
             List<EdgeElement> linklist = new ArrayList<>(links);
+            number_of_slots = NetworkState.getFiberLink(linklist.get(0).getEdgeID()).getTotalNumberOfMiniGrids();
             //	Capacity = new int[L];
             src_of_link = new int[L];
             dst_of_link = new int[L];
