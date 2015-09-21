@@ -1,21 +1,42 @@
 package com.defragILP;
 
+import com.graph.elements.edge.EdgeElement;
+import com.graph.elements.vertex.VertexElement;
+import com.inputdata.InputParameters;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 
 public class MainDefragClass {
 	
-/*	private static int N;
-	//private static SNDlib topologyObj;
+	private static int N;
+	Set<String> nodenames;
+    Set<EdgeElement> links;
+	//private static Real_Traffic demand;
+	private static Parameter_Provider_for_ILP parameters;
+	private static GurobiObj_for_defrag gurobi_defrag_Obj;
+	//private static K_Shortest_Paths k_paths_Obj;
+	public MainDefragClass() {
+        //	k_paths_Obj = new K_Shortest_Paths(topologyObj, 3);
+        //	demand = new Real_Traffic(N); // initialize constructor
+        //	demand.generate_random_traffic(4, seed); // generate traffic matrix
+
+
+
+	parameters = new Parameter_Provider_for_ILP();
+	gurobi_defrag_Obj = new GurobiObj_for_defrag(parameters);
+	gurobi_defrag_Obj.minimize_utilization_cost();
+    }
+/* //private static SNDlib topologyObj;
 //	private static OSPF_Link_Metrics linkmetrics;
 //	private static Routing initial_ospf_routing;
 	private static Real_Traffic demand;
 	//private static LinkLoads linkloadObj;
 	//private static LinkCapacities capacities;
-	private static Parameter_Provider_for_TE_Model_1 parameters;
-	private static GurobiObj_for_defrag gurobi_defrag_Obj;
-	private static K_Shortest_Paths k_paths_Obj;
-	private static long seed = 123456789;
+   private static long seed = 123456789;
 	private static String[] sndfile = {
 			"atlanta-15nodes.txt",		// 0
 			"cost266-37nodes.txt",		// 1

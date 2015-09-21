@@ -6,6 +6,7 @@ import com.auxiliarygraph.elements.Connection;
 import com.auxiliarygraph.elements.FiberLink;
 import com.auxiliarygraph.elements.LightPath;
 import com.auxiliarygraph.elements.Path;
+import com.defragILP.MainDefragClass;
 import com.graph.elements.edge.EdgeElement;
 import com.graph.elements.vertex.VertexElement;
 import com.graph.path.PathElement;

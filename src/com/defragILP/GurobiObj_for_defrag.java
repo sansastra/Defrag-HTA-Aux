@@ -7,11 +7,11 @@ import gurobi.*;
 public class GurobiObj_for_defrag {
     // This ILP model minimizes the Maximum Link Utilization
 
-    Parameter_Provider_for_TE_Model_1 param;
+    Parameter_Provider_for_ILP param;
    // int[][] cap;
     double acceptable_gap = 0.01;
 
-    public GurobiObj_for_defrag(Parameter_Provider_for_TE_Model_1 parameters){
+    public GurobiObj_for_defrag(Parameter_Provider_for_ILP parameters){
         this.param = parameters;
     //    this.cap = capacities.capacity;
     }
@@ -74,15 +74,7 @@ public class GurobiObj_for_defrag {
             // Integrate new variables
             model.update();
             GRBLinExpr expr1,expr2;
-// objective function
 
-   /*
-            for (int l = 0; l < param.L; l++)
-                expr1.addTerm(1,max_index_of_used_slots[l]);
-            model.setObjective(expr1, GRB.MINIMIZE);
-            System.out.println("objective function is defined");
-            System.out.println("Total Flows: " + param.F + " Total Link: " + param.L + " Total paths: " + param.MPLS_P);
-*/
 
 
 
@@ -101,7 +93,7 @@ public class GurobiObj_for_defrag {
 
                 expr1 = new GRBLinExpr();
                 for (int p = 0; p < param.MPLS_P; p++) {
-                    if (param.MPLS_fitting[f][p]) {
+                    if (param.fitting[f][p]) {
                         for (int s = 0; s < param.number_of_slots; s++)
                             expr1.addTerm(1, R_max[p][s]); //
                     }
@@ -118,7 +110,7 @@ public class GurobiObj_for_defrag {
 
                 expr1 = new GRBLinExpr();
                 for (int p = 0; p < param.MPLS_P; p++) {
-                    if (param.MPLS_fitting[f][p]) {
+                    if (param.fitting[f][p]) {
                         for (int s = 0; s < param.number_of_slots; s++)
                             expr1.addTerm(1, R[p][s]); //
                     }
@@ -134,7 +126,7 @@ public class GurobiObj_for_defrag {
 // demand satisfaction constraint
            System.out.print("Generating constraints 1:");
             for (int p = 0; p < param.MPLS_P; p++) {
-                int f = param.flow_of_MPLS_path_p[p];
+                int f = param.flow_of_path_p[p];
   //              System.out.println("traffic for path "+ p+ " is "+param.Demand[f]);
                 for (int s=0; s<param.number_of_slots; s++) {
                     expr1 = new GRBLinExpr();
@@ -161,7 +153,7 @@ public class GurobiObj_for_defrag {
                 for (int l=0; l<param.L; l++) {
                     expr1 = new GRBLinExpr();
                     for (int p = 0; p < param.MPLS_P; p++) {
-                        if (param.MPLS_traversing[p][l])
+                        if (param.traversing[p][l])
                             expr1.addTerm(1, R[p][s]); //
                     }
                     model.addConstr(expr1, GRB.LESS_EQUAL, 1, "slot"+s+"is used for link"+l);
@@ -178,7 +170,7 @@ public class GurobiObj_for_defrag {
                 for (int l=0; l<param.L; l++){
                     for (int p=0; p<param.MPLS_P; p++) {
                         expr1 = new GRBLinExpr();
-                        if (param.MPLS_traversing[p][l]){
+                        if (param.traversing[p][l]){
                             expr1.addTerm(s, R_max[p][s]);
                             model.addConstr(expr1, GRB.LESS_EQUAL, max_index_of_used_slots[l], "maximum index on link" + l + "is" + max_index_of_used_slots[l]);
                             constrCnt++;
@@ -203,17 +195,17 @@ public class GurobiObj_for_defrag {
 
             System.out.println("MPLS Routing:");
             for (int f=0; f<param.F; f++){
-                System.out.print("Flow " + f + " from " + param.nodenames[param.src_of_flow[f]] + " to " + param.nodenames[param.dst_of_flow[f]] + ": ");
+              //  System.out.print("Flow " + f + " from " + param.nodenames[param.src_of_flow[f]] + " to " + param.nodenames[param.dst_of_flow[f]] + ": ");
                 for (int p=0; p<param.MPLS_P; p++){
-                    if (param.MPLS_fitting[f][p]) {
+                    if (param.fitting[f][p]) {
                         for (int s = 0; s < param.number_of_slots; s++)
                             if (R[p][s].get(GRB.DoubleAttr.X) > 0.5) {
-                                //   System.out.print("(Flow number " + param.flow_of_MPLS_path_p[p] + ")");
+                                   System.out.print("(Flow number " + param.flow_of_path_p[p] + ")");
                                 for (int l = 0; l < param.L; l++)
-                                    if (param.MPLS_traversing[p][l])
-                                        System.out.print("(" + param.nodenames[param.src_of_link[l]] + "," + param.nodenames[param.dst_of_link[l]] + ")Slot " + s);
+                                    if (param.traversing[p][l])
+                                        System.out.print("(" + param.nodelist.get(param.src_of_link[l]) + "," + param.nodelist.get(param.dst_of_link[l]) + ")Slot " + s);
                                 if(R_max[p][s].get(GRB.DoubleAttr.X) > 0.5)
-                                    System.out.println("(max used slot for flow " + param.flow_of_MPLS_path_p[p]+" is slot"+ s);
+                                    System.out.println("(max used slot for flow " + param.flow_of_path_p[p]+" is slot"+ s);
                             }
                     }
                 }
@@ -227,7 +219,7 @@ public class GurobiObj_for_defrag {
             for (int l=0; l<param.L; l++){
                 int max_index_slot  = (int) max_index_of_used_slots[l].get(GRB.DoubleAttr.X);
 
-                System.out.println("Maximum slot index used on link " + param.nodenames[param.src_of_link[l]] + "-" + param.nodenames[param.dst_of_link[l]]
+                System.out.println("Maximum slot index used on link " + param.nodelist.get(param.src_of_link[l]) + "-" + param.nodelist.get(param.dst_of_link[l])
                         + " is  " + max_index_slot);
                 if(max_index_slot >= max_utilized_index )
                     max_utilized_index = max_index_slot;
@@ -247,5 +239,4 @@ public class GurobiObj_for_defrag {
         return return_value;
     }
 
-
-}
+ }

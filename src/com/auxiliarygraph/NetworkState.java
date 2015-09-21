@@ -109,7 +109,7 @@ public class NetworkState {
     public static int getNumOfMiniGridsPerGB() {
         return numOfMiniGridsPerGB;
     }
-
+    public static List<Path> getListOfPaths() {return listOfPaths;}
     /**
      * Experimental
      */

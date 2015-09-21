@@ -1,6 +1,7 @@
 package com.simulator.event;
 
 import com.auxiliarygraph.AuxiliaryGraph;
+import com.defragILP.MainDefragClass;
 import com.filemanager.Results;
 import com.inputdata.elements.TrafficClass;
 import com.launcher.SimulatorParameters;
@@ -69,6 +70,8 @@ public class CircuitRequestEvent extends Event {
         } else { /**if not, increase blocking counter*/
             selectedFlow.increaseBlockingCounter(trafficClass.getType(), isUnKnown);
             log.debug("Connection is blocked");
+            /** test ILP */
+            MainDefragClass mainILP = new MainDefragClass();
         }
 
         /** Increase request counter for this flow */

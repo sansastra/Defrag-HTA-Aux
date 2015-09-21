@@ -138,10 +138,12 @@ public class InputParameters {
      *
      * @return set of vertex com.inputdata.elements of the network
      */
-    public static Set<VertexElement> getSetOfVertexs() {
+    public static Set<String> getSetOfVertexIDSets() {
+        return graph.getVertexIDSet();
+    }
+    public static Set<VertexElement> getSetOfVertices() {
         return graph.getVertexSet();
     }
-
     /**
      * Get the set of links of the network
      *
@@ -150,7 +152,9 @@ public class InputParameters {
     public static Set<EdgeElement> getSetOfEdges() {
         return graph.getEdgeSet();
     }
-
+    public static boolean getIfConnectiongEdge(String src, String dst) {
+        return graph.aConnectingEdge(src,dst);
+    }
     /**
      * Get the list of traffic classes
      *
