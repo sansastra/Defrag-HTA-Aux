@@ -26,6 +26,7 @@ public class MainDefragClass {
     maxSlotList= gurobi_defrag_Obj.getMaxIndexSlotForAllDemand();
 	reconfigure = new Reconfigure();
         reconfigure.setTheConnectionToNewLightpath(maxSlotList);
+
     }
 /* //private static SNDlib topologyObj;
 //	private static OSPF_Link_Metrics linkmetrics;
