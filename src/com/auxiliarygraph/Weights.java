@@ -45,11 +45,11 @@ public class Weights {
                 break;
             /** Fragmentation*/
             case 5:
-                transponderEdgeCost = 1e10;
+                transponderEdgeCost = 1e3;
                 break;
             /** FirstFit*/
             case 6:
-                transponderEdgeCost = 1e10;
+                transponderEdgeCost = 1e3;
                 break;
         }
     }

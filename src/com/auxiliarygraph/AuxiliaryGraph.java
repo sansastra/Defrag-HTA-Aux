@@ -131,7 +131,7 @@ public class AuxiliaryGraph {
         for (LightPathEdge lpe : listLightPathEdges)
             for (EdgeElement ee : lpe.getLightPath().getPathElement().getTraversedEdges())
                 counterPath++;
-        for (int i = 0; i < listOfSpectrumEdges.size() - 1; i++) {
+        for (int i = 0; i < listOfSpectrumEdges.size()/* - 1*/; i++) {
             if (i == 0)
                 counterPath++;
             else if (!listOfSpectrumEdges.get(i).getEdgeElement().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement()))

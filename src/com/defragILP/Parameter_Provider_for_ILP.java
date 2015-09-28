@@ -92,8 +92,8 @@ public class Parameter_Provider_for_ILP {
             //InputParameters.getIfConnectiongEdge(node,node1)
             for (String node : nodelist) {
                 for (String node1 : nodelist) {
+                    int demand =0;
                     if (!node.equals(node1)) {
-                        int demand =0;
                          for (int i = 0; i < N; i++) {
                             if (nodeElementsList.get(i).getVertexID().equals(node))
                                 ver1 = nodeElementsList.get(i);

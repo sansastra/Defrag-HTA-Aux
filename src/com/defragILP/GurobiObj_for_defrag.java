@@ -4,8 +4,11 @@
 package com.defragILP;
 import gurobi.*;
 
+import java.util.ArrayList;
+
 public class GurobiObj_for_defrag {
     // This ILP model minimizes the Maximum Link Utilization
+    ArrayList<Integer> maxSlotList;
 
     Parameter_Provider_for_ILP param;
    // int[][] cap;
@@ -204,8 +207,10 @@ public class GurobiObj_for_defrag {
                                 for (int l = 0; l < param.L; l++)
                                     if (param.traversing[p][l])
                                         System.out.print("(" + param.nodelist.get(param.src_of_link[l]) + "," + param.nodelist.get(param.dst_of_link[l]) + ")Slot " + s);
-                                if(R_max[p][s].get(GRB.DoubleAttr.X) > 0.5)
+                                if(R_max[p][s].get(GRB.DoubleAttr.X) > 0.5){
+                                    maxSlotList.add(f,s);
                                     System.out.println("(max used slot for flow " + param.flow_of_path_p[p]+" is slot"+ s);
+                                }
                             }
                     }
                 }
@@ -235,8 +240,8 @@ public class GurobiObj_for_defrag {
             System.out.println("Error code: " + e.getErrorCode() + ". "+ e.getMessage());
         }
 
-
         return return_value;
     }
 
+    ArrayList<Integer> getMaxIndexSlotForAllDemand(){return maxSlotList;}
  }

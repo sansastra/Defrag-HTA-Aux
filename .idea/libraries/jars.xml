@@ -8,7 +8,7 @@
       <root url="jar://$PROJECT_DIR$/jars/junit-4.11.jar!/" />
       <root url="jar://$PROJECT_DIR$/jars/jsim.jar!/" />
       <root url="jar://$PROJECT_DIR$/jars/uncommons-maths-1.2.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/jars/gurobi.jar!/" />
+      <root url="jar://C:/gurobi605/win64/lib/gurobi.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
