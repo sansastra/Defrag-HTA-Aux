@@ -89,20 +89,20 @@ public class Parameter_Provider_for_ILP {
             int d =0;
             VertexElement ver1 =nodeElementsList.get(0), ver2=nodeElementsList.get(0);
             List<LightPath> lightpaths;
-            //InputParameters.getIfConnectiongEdge(node,node1)
+            //InputParameters.getGraph().getVertex()
             for (String node : nodelist) {
                 for (String node1 : nodelist) {
                     int demand =0;
                     if (!node.equals(node1)) {
-                         for (int i = 0; i < N; i++) {
-                            if (nodeElementsList.get(i).getVertexID().equals(node))
-                                ver1 = nodeElementsList.get(i);
-                            if (nodeElementsList.get(i).getVertexID().equals(node1))
-                                ver2 = nodeElementsList.get(i);
-                        }
-                        lightpaths= NetworkState.getListOfLightPaths(ver1, ver2);
-                        int num= lightpaths.size();
-                        for (int i = 0; i < num; i++) {
+//                         for (int i = 0; i < N; i++) {
+//                            if (nodeElementsList.get(i).getVertexID().equals(node))
+//                                ver1 = nodeElementsList.get(i);
+//                            if (nodeElementsList.get(i).getVertexID().equals(node1))
+//                                ver2 = nodeElementsList.get(i);
+//                        }
+                        lightpaths= NetworkState.getListOfLightPaths(InputParameters.getGraph().getVertex(node), InputParameters.getGraph().getVertex(node1));
+//                        int num= lightpaths.size();
+                        for (int i = 0; i < lightpaths.size(); i++) {
                             connectioTomap= lightpaths.get(i).getConnectionMap();
                            for (Map.Entry<Double,Connection> entry : connectioTomap.entrySet())
                               demand += entry.getValue().getBw();

@@ -32,6 +32,10 @@ public class GurobiObj_for_defrag {
 
 
     boolean minimize_utilization_cost(){
+        maxSlotList = new ArrayList<>();
+        for (int i = 0; i < param.F; i++) {
+            maxSlotList.add(-1);
+        }
         boolean return_value = false;
 
         try {
@@ -208,7 +212,7 @@ public class GurobiObj_for_defrag {
                                     if (param.traversing[p][l])
                                         System.out.print("(" + param.nodelist.get(param.src_of_link[l]) + "," + param.nodelist.get(param.dst_of_link[l]) + ")Slot " + s);
                                 if(R_max[p][s].get(GRB.DoubleAttr.X) > 0.5){
-                                    maxSlotList.add(f,s);
+                                    maxSlotList.add(s);
                                     System.out.println("(max used slot for flow " + param.flow_of_path_p[p]+" is slot"+ s);
                                 }
                             }

@@ -178,4 +178,19 @@ public class LightPath {
     public int getFirstMiniGrid() {
         return miniGridIds.get(0);
     }
+
+// new code
+    public void removeAllMinigridIDs(){
+            miniGridIds.clear();
+    }
+    public void setMinigridIDs(int initialgrid, int bw){
+        for (int i = initialgrid; i < initialgrid + bw; i++)
+            miniGridIds.add(i);
+    }
+
+    public void setAllMiniGrids() {
+        for (EdgeElement e : pathElement.getTraversedEdges())
+            for (Integer i : miniGridIds)
+                NetworkState.getFiberLink(e.getEdgeID()).setUsedMiniGrid(i);
+    }
 }

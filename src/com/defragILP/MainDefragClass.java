@@ -14,6 +14,7 @@ public class MainDefragClass {
 	
 	private static int N;
 	ArrayList<Integer> maxSlotList;
+    boolean ilpTrue;
 	//private static Real_Traffic demand;
 	private static Parameter_Provider_for_ILP parameters;
 	private static GurobiObj_for_defrag gurobi_defrag_Obj;
@@ -22,11 +23,11 @@ public class MainDefragClass {
 	public MainDefragClass() {
 	parameters = new Parameter_Provider_for_ILP();
 	gurobi_defrag_Obj = new GurobiObj_for_defrag(parameters);
-	gurobi_defrag_Obj.minimize_utilization_cost();
+	ilpTrue= gurobi_defrag_Obj.minimize_utilization_cost();
     maxSlotList= gurobi_defrag_Obj.getMaxIndexSlotForAllDemand();
 	reconfigure = new Reconfigure();
-        reconfigure.setTheConnectionToNewLightpath(maxSlotList);
-
+    reconfigure.setTheConnectionToNewLightpath(maxSlotList);
+   // public boolean getIfILPcanReconfigure(){return ilpTrue;}
     }
 /* //private static SNDlib topologyObj;
 //	private static OSPF_Link_Metrics linkmetrics;

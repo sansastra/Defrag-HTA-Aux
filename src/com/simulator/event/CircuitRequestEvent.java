@@ -72,6 +72,7 @@ public class CircuitRequestEvent extends Event {
             log.debug("Connection is blocked");
             /** test ILP */
             MainDefragClass mainILP = new MainDefragClass();
+           // if (mainILP.getIfILPcanReconfigure())
         }
 
         /** Increase request counter for this flow */
