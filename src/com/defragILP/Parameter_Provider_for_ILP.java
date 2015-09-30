@@ -87,19 +87,33 @@ public class Parameter_Provider_for_ILP {
             int f=0;
             int s =0;
             int d =0;
-            VertexElement ver1 =nodeElementsList.get(0), ver2=nodeElementsList.get(0);
+            // Links
+            int l=0;
+            links = InputParameters.getSetOfEdges();
+            L = links.size();
+            List<EdgeElement> linklist = new ArrayList<>(links);
+            number_of_slots = NetworkState.getFiberLink(linklist.get(0).getEdgeID()).getTotalNumberOfMiniGrids();
+            //	Capacity = new int[L];
+            src_of_link = new int[L];
+            dst_of_link = new int[L];
+            src_l = new boolean[L][N];
+            dst_l = new boolean[L][N];
+            linkNo = new int[N][N];
+         //   VertexElement ver1 =nodeElementsList.get(0), ver2=nodeElementsList.get(0);
             List<LightPath> lightpaths;
             //InputParameters.getGraph().getVertex()
             for (String node : nodelist) {
                 for (String node1 : nodelist) {
                     int demand =0;
                     if (!node.equals(node1)) {
-//                         for (int i = 0; i < N; i++) {
-//                            if (nodeElementsList.get(i).getVertexID().equals(node))
-//                                ver1 = nodeElementsList.get(i);
-//                            if (nodeElementsList.get(i).getVertexID().equals(node1))
-//                                ver2 = nodeElementsList.get(i);
-//                        }
+                        if(InputParameters.getIfConnectiongEdge(node,node1)) {
+                            src_of_link[l] = s;
+                            dst_of_link[l] = d;
+                            linkNo[s][d] = l;
+                            l++;
+                        }   else
+                            linkNo[s][d] = -1;
+
                         lightpaths= NetworkState.getListOfLightPaths(InputParameters.getGraph().getVertex(node), InputParameters.getGraph().getVertex(node1));
 //                        int num= lightpaths.size();
                         for (int i = 0; i < lightpaths.size(); i++) {
@@ -114,46 +128,16 @@ public class Parameter_Provider_for_ILP {
                         src_f[f][s] = true;
                         dst_f[f][d] = true;
                         f++;
-                    } else
+                    } else {
                         flowNo[s][d] = -1;
+                        linkNo[s][d] = -1;
+                    }
                     d++;
                 }
                 d = 0;
                 s++;
             }
-            // Links
-            links = InputParameters.getSetOfEdges();
-            L = links.size();
-            List<EdgeElement> linklist = new ArrayList<>(links);
-            number_of_slots = NetworkState.getFiberLink(linklist.get(0).getEdgeID()).getTotalNumberOfMiniGrids();
-            //	Capacity = new int[L];
-            src_of_link = new int[L];
-            dst_of_link = new int[L];
-            src_l = new boolean[L][N];
-            dst_l = new boolean[L][N];
-            linkNo = new int[N][N];
-            int l = 0;
-            s =0;
-            d =0;
-            for (int i = 0; i <N; i++) {
-                for (int j = 0; j <N; j++) {
-                    linkNo[i][j]=-1;
-                }
-            }
-            for (EdgeElement edge:linklist) {
-                for (int i = 0; i < N; i++) {
-                    if (edge.getSourceVertex().getVertexID().equals(nodelist.get(i))) {
-                        s = i;
-                        src_of_link[l] = s;
-                    }
-                    else if(edge.getDestinationVertex().getVertexID().equals(nodelist.get(i))){
-                        d = i;
-                        dst_of_link[l] = d;
-                    }
-                }
-                linkNo[s][d] = l;
-                l++;
-            }
+
             // Demands of all flows
 
             // MPLS Paths
@@ -175,15 +159,12 @@ public class Parameter_Provider_for_ILP {
                 fitting[flowno][pathNo]=true;
                 flow_of_path_p[pathNo] = flowno;
                 List<EdgeElement> ee= p.getPathElement().getTraversedEdges();
-                int size = ee.size();
-                for (int i = 0; i < size; i++) {
-                    String edgeid = ee.get(i).getEdgeID();
-                    for (int j = 0; j < L; j++) {
-                        if (linklist.get(j).getEdgeID().equals(edgeid))
+                for (EdgeElement edge:ee) {
+                    s = nodelist.indexOf(edge.getSourceVertex().getVertexID());
+                    d = nodelist.indexOf(edge.getDestinationVertex().getVertexID());
+                    for (int j = 0; j < L; j++)
+                        if (linkNo[s][d]==j)
                             traversing[pathNo][j]=true;
-                        else
-                            traversing[pathNo][j]=false;
-                    }
                 }
                 pathNo++;
             }
@@ -191,26 +172,4 @@ public class Parameter_Provider_for_ILP {
 
 
 }
-     /*       for (RoutingTreeNode s : k_path.nodes)
-                for (LinkedList<LinkedList<RoutingTreeNode>> paths_from_s_to_d : s.k_shortest_paths.values())
-                    MPLS_P += paths_from_s_to_d.size();
-            MPLS_fitting = new boolean[F][MPLS_P];
-            MPLS_traversing = new boolean[MPLS_P][L];
-            flow_of_MPLS_path_p = new int[MPLS_P];
-            int p = 0;
-            for (RoutingTreeNode s : k_path.nodes)
-                for (Integer d : s.k_shortest_paths.keySet()){
-                    LinkedList<LinkedList<RoutingTreeNode>> the_paths_from_s_to_d = s.k_shortest_paths.get(d);
-                    for (LinkedList<RoutingTreeNode> next_path : the_paths_from_s_to_d){
-                        flow_of_MPLS_path_p[p] = flowNo[s.number][d];
-                        MPLS_fitting[flowNo[s.number][d]][p] = true;
-                        for (int e=0; e<next_path.size()-1; e++){
-                            int i = next_path.get(e).number;
-                            int j = next_path.get(e+1).number;
-                            MPLS_traversing[p][linkNo[i][j]] = true;
-                        }
-                        p++;
-                    }
-                } */
-     //   }
-  //  }
+

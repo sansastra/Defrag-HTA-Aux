@@ -33,11 +33,8 @@ public class GurobiObj_for_defrag {
 
     boolean minimize_utilization_cost(){
         maxSlotList = new ArrayList<>();
-        for (int i = 0; i < param.F; i++) {
-            maxSlotList.add(-1);
-        }
         boolean return_value = false;
-
+        boolean max =false;
         try {
             GRBEnv    env   = new GRBEnv("Traffic_Engineering_for_min_of_util_cost.log");
             GRBModel  model = new GRBModel(env);
@@ -202,6 +199,7 @@ public class GurobiObj_for_defrag {
 
             System.out.println("MPLS Routing:");
             for (int f=0; f<param.F; f++){
+                max= false;
               //  System.out.print("Flow " + f + " from " + param.nodenames[param.src_of_flow[f]] + " to " + param.nodenames[param.dst_of_flow[f]] + ": ");
                 for (int p=0; p<param.MPLS_P; p++){
                     if (param.fitting[f][p]) {
@@ -213,13 +211,14 @@ public class GurobiObj_for_defrag {
                                         System.out.print("(" + param.nodelist.get(param.src_of_link[l]) + "," + param.nodelist.get(param.dst_of_link[l]) + ")Slot " + s);
                                 if(R_max[p][s].get(GRB.DoubleAttr.X) > 0.5){
                                     maxSlotList.add(s);
-                                    System.out.println("(max used slot for flow " + param.flow_of_path_p[p]+" is slot"+ s);
+                                    System.out.println("(max used slot for flow " + param.flow_of_path_p[p] + " is slot" + s);
+                                    max=true;
                                 }
                             }
                     }
                 }
-
-
+                if(!max)
+                    maxSlotList.add(-1);
                 System.out.println();
             }
 

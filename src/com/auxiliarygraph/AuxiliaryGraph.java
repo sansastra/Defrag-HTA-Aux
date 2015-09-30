@@ -165,7 +165,10 @@ public class AuxiliaryGraph {
             if (selectedSpectrumEdges.size() == 1) {
                 vertexes.add(selectedSpectrumEdges.get(0).getEdgeElement().getSourceVertex());
                 vertexes.add(selectedSpectrumEdges.get(0).getEdgeElement().getDestinationVertex());
+                if(NetworkState.getPathElement(vertexes) == null)
+                    log.error(" ");
                 newLightPaths.add(new LightPath(NetworkState.getPathElement(vertexes), miniGrid, bwWithGB, bw, newConnection));
+
             } else {
                 vertexes.add(selectedSpectrumEdges.get(0).getEdgeElement().getSourceVertex());
                 for (int i = 1; i < selectedSpectrumEdges.size(); i++) {
@@ -173,12 +176,18 @@ public class AuxiliaryGraph {
                         vertexes.add(selectedSpectrumEdges.get(i).getEdgeElement().getSourceVertex());
                     if (!selectedSpectrumEdges.get(i).getEdgeElement().getSourceVertex().equals(selectedSpectrumEdges.get(i - 1).getEdgeElement().getDestinationVertex())) {
                         vertexes.add(selectedSpectrumEdges.get(i - 1).getEdgeElement().getDestinationVertex());
+
+                        if(NetworkState.getPathElement(vertexes) == null)
+                            log.error(" ");
                         newLightPaths.add(new LightPath(NetworkState.getPathElement(vertexes), miniGrid, bwWithGB, bw, newConnection));
                         vertexes = new ArrayList<>();
                         vertexes.add(selectedSpectrumEdges.get(i).getEdgeElement().getSourceVertex());
                     }
                     if (i == selectedSpectrumEdges.size() - 1) {
                         vertexes.add(selectedSpectrumEdges.get(i).getEdgeElement().getDestinationVertex());
+
+                        if(NetworkState.getPathElement(vertexes) == null)
+                            log.error(" ");
                         newLightPaths.add(new LightPath(NetworkState.getPathElement(vertexes), miniGrid, bwWithGB, bw, newConnection));
                     }
                 }

@@ -45,11 +45,13 @@ public class Weights {
                 break;
             /** Fragmentation*/
             case 5:
-                transponderEdgeCost = 1e3;
+                lpeFactor1= 0;
+                lpeFactor1= 1;
+                transponderEdgeCost = 1e9;
                 break;
             /** FirstFit*/
             case 6:
-                transponderEdgeCost = 1e3;
+                transponderEdgeCost = 1e9;
                 break;
         }
     }
