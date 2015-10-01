@@ -193,4 +193,21 @@ public class LightPath {
             for (Integer i : miniGridIds)
                 NetworkState.getFiberLink(e.getEdgeID()).setUsedMiniGrid(i);
     }
+
+    public void reconfigureAllConnections(int initialGrid, int demand){
+        Map<Double, Connection> treeMap = new TreeMap<Double, Connection>(new Comparator<Double>() {
+
+                    @Override
+                    public int compare(Double o1, Double o2) {
+                        return o2.compareTo(o1);
+                    }
+
+                });
+        treeMap.putAll(connectionMap);
+        for (Map.Entry<Double, Connection> entry : treeMap.entrySet()){
+            entry.getValue().setMiniGrid(initialGrid);
+            initialGrid = initialGrid + entry.getValue().getBw()-1;
+        }
+    }
+
 }

@@ -70,6 +70,7 @@ public class Reconfigure {
         int f=0;
         int s =0;
         int d =0;
+        int minigrid=-1;
         for (String node : nodelist) {
             for (String node1 : nodelist) {
                 if (!node.equals(node1)) {
@@ -79,11 +80,14 @@ public class Reconfigure {
                         demand =0;
                         connectioTomap= lp.getConnectionMap();
             //getPathElement().getTraversedEdges().get(i)..getConnectionMap();
-                        for (Map.Entry<Double,Connection> entry : connectioTomap.entrySet())
+                        for (Map.Entry<Double,Connection> entry : connectioTomap.entrySet()) {
                             demand += entry.getValue().getBw();
+
+                        }
                         intialMinigridID = intialMinigridID-demand+1;
                         lp.setMinigridIDs(intialMinigridID, demand);
                         lp.setAllMiniGrids();
+                        lp.reconfigureAllConnections(intialMinigridID, demand);
                     }
                     f++;
                 }

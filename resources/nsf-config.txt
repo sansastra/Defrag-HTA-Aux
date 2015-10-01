@@ -1,12 +1,12 @@
 # SNDlib network file
-3links-network.txt
-#nsf-network-new.txt
+#3links-network.txt
+nsf-network-new.txt
 # Simulation time
 1000000000
 # Max number of total request events before to stop the simulation
-100000
+1000000
 # Number of simulations
-1
+5
 # g: grid granularity (Ghz) //or 12.5 GHz and modulation format=2
 5
 # Modulation format (bits/s/Hz)
@@ -14,7 +14,7 @@
 # B: number of mini-grids consumed by a guard band
 0
 # C: transmission capacity of transponders (Ghz)
-100
+0
 # M: maximum allowed number of reserved mini-grids
 0
 # Policy {MinLP => 1} {MinHops => 2} {MinTHP => 3} {LB => 4}{FI => 5} {FF => 6}

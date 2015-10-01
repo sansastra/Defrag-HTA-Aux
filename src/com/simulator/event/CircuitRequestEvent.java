@@ -71,7 +71,7 @@ public class CircuitRequestEvent extends Event {
             selectedFlow.increaseBlockingCounter(trafficClass.getType(), isUnKnown);
             log.debug("Connection is blocked");
             /** test ILP */
-    //        MainDefragClass mainILP = new MainDefragClass();
+   //         MainDefragClass mainILP = new MainDefragClass();
            // if (mainILP.getIfILPcanReconfigure())
         }
 

@@ -57,7 +57,7 @@ public class AuxiliaryGraph {
                 List<Integer> freeMiniGrids = NetworkState.getFiberLink(e.getEdgeID()).getFreeMiniGrids(bwWithGB);
                 if (freeMiniGrids.size() >= bwWithGB)
                     for (Integer i : freeMiniGrids)
-                        listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(),bwWithGB));
+                        listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(),bwWithGB, ht));
             }
 
         /** For each pre-existing lightpath ...*/

@@ -45,24 +45,27 @@ public class Weights {
                 break;
             /** Fragmentation*/
             case 5:
-                lpeFactor1= 0;
-                lpeFactor1= 1;
                 transponderEdgeCost = 1e9;
                 break;
             /** FirstFit*/
             case 6:
                 transponderEdgeCost = 1e9;
                 break;
+            case 7:
+                transponderEdgeCost = 1e9;
+                break;
         }
     }
 
-    public static double getSpectrumEdgeCost(String edgeID, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB) {
+    public static double getSpectrumEdgeCost(String edgeID, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB, double ht) {
 
         if (POLICY == 4)
             seFactor = NetworkState.getFiberLink(edgeID).getNumberOfMiniGridsUsed();
         else if (POLICY == 5)
-           seFactor = 1e5*NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB);
+            seFactor = 1e5*NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB);
         else if (POLICY == 6)
+            seFactor = 1e5*NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht);
+        else if (POLICY == 7)
             return spectrumLayerIndex ;
         return seFactor + 1e-5 * spectrumLayerIndex;
     }

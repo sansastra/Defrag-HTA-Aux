@@ -22,7 +22,7 @@ public class Connection {
     /**
      * Required bandwidth for the connection
      */
-    private double bw;
+    private int bw;
     /**
      * Boolean to specify if the incoming holding time is known or unknown
      */
@@ -38,7 +38,7 @@ public class Connection {
     /**
      * Constructor class
      */
-    public Connection(double startingTime, double holdingTime, double bw, boolean isUnKnown, int miniGrid) {
+    public Connection(double startingTime, double holdingTime, int bw, boolean isUnKnown, int miniGrid) {
         this.startingTime = startingTime;
         this.holdingTime = holdingTime;
         this.bw = bw;
@@ -69,7 +69,7 @@ public class Connection {
         return holdingTime;
     }
 
-    public double getBw() {
+    public int getBw() {
         return bw;
     }
 
@@ -83,5 +83,8 @@ public class Connection {
 
     public int getMiniGrid() {
         return miniGrid;
+    }
+    public void setMiniGrid(int initialGrid){
+        miniGrid = initialGrid;
     }
 }

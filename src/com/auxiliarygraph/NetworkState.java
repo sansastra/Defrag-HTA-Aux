@@ -113,7 +113,7 @@ public class NetworkState {
     /**
      * Experimental
      */
-    public void applyDefragmentation(LightPath leavingLP, Connection leavingConnection) {
+   /* public void applyDefragmentation(LightPath leavingLP, Connection leavingConnection) {
 
         Set<LightPath> candidateLightPathsToReconfigure = new HashSet<>();
 
@@ -124,7 +124,7 @@ public class NetworkState {
                         candidateLightPathsToReconfigure.add(lp);
 
     }
-
+*/
     public static Set<FiberLink> getNeighborsFiberLinks(VertexElement src, VertexElement dst) {
 
         Set<FiberLink> neighboursFiberLinks = new HashSet<>();
@@ -133,5 +133,16 @@ public class NetworkState {
                 neighboursFiberLinks.add(fiberLinksMap.get(e.getEdgeID()));
 
         return neighboursFiberLinks;
+    }
+
+    public static List<LightPath> getListOfTraversingLightPaths(EdgeElement link) {
+        List<LightPath> listOfLPs = new ArrayList<>();
+        List<LightPath> listOfExistingLPs = getListOfLightPaths();
+        for (LightPath lp : listOfExistingLPs) {
+            if (lp.getPathElement().getTraversedEdges().contains(link))
+                listOfLPs.add(lp);
+        }
+
+        return listOfLPs;
     }
 }
