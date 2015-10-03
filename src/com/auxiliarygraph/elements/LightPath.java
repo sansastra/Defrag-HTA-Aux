@@ -43,6 +43,8 @@ public class LightPath {
         return pathElement;
     }
 
+    public int getLPbandwidth(){return miniGridIds.size();}
+
     public void expandLightPathOnLeftSide(int bw, Connection connection) {
 
         int firstFreeMiniGrid = miniGridIds.get(0) - 1;
@@ -186,6 +188,7 @@ public class LightPath {
     public void setMinigridIDs(int initialgrid, int bw){
         for (int i = initialgrid; i < initialgrid + bw; i++)
             miniGridIds.add(i);
+        Collections.sort(miniGridIds);
     }
 
     public void setAllMiniGrids() {

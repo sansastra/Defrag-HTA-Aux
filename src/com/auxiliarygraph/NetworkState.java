@@ -49,14 +49,15 @@ public class NetworkState {
 
         for (Path p : listOfCandidatePaths) {
             List<VertexElement> vertexElements = p.getPathElement().getTraversedVertices();
-            for (int i = 0; i < vertexElements.size() - 1; i++)
-                for (int j = i + 1; j < vertexElements.size(); j++) {
-                    List<LightPath> tmpListOfLP = getListOfLightPaths(vertexElements.get(i), vertexElements.get(j));
+//            for (int i = 0; i < vertexElements.size() - 1; i++)
+//                for (int j = i + 1; j < vertexElements.size(); j++) {
+//                    List<LightPath> tmpListOfLP = getListOfLightPaths(vertexElements.get(i), vertexElements.get(j));
+            List<LightPath> tmpListOfLP = getListOfLightPaths(vertexElements.get(0), vertexElements.get(vertexElements.size() - 1));
                     for (LightPath lp : tmpListOfLP)
                         if (!listOfLightPaths.contains(lp))
                             listOfLightPaths.add(lp);
                 }
-        }
+      //  }
 
         return listOfLightPaths;
     }

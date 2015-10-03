@@ -55,7 +55,7 @@ public class AuxiliaryGraph {
         for (Path p : listOfCandidatePaths)
             for (EdgeElement e : p.getPathElement().getTraversedEdges()) {
                 List<Integer> freeMiniGrids = NetworkState.getFiberLink(e.getEdgeID()).getFreeMiniGrids(bwWithGB);
-                if (freeMiniGrids.size() >= bwWithGB)
+               // if (freeMiniGrids.size() >= bwWithGB)
                     for (Integer i : freeMiniGrids)
                         listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(),bwWithGB, ht));
             }
@@ -96,50 +96,56 @@ public class AuxiliaryGraph {
 
     public double calculateTheCostForMiniGrid(Path p, int miniGrid) {
 
-        double layerCost = 0;
+        double layerCost = -1;
         List<SpectrumEdge> listOfSpectrumEdges = new ArrayList<>();
         SpectrumEdge se;
 
         /**Add light path edges costs*/
         List<LightPathEdge> listLightPathEdges = getLightPathEdges(p, miniGrid);
         for (LightPathEdge lpe : listLightPathEdges)
-            layerCost += lpe.getCost();
+            layerCost = lpe.getCost();
 
-        /**Add spectrum edges costs*/
-        for (EdgeElement e : p.getPathElement().getTraversedEdges())
-            if (getNumberOfSpectrumEdges(e, miniGrid) == bwWithGB)
-                for (int i = miniGrid; i < miniGrid + bwWithGB; i++) {
-                    se = getSpectrumEdge(e, i);
-                    listOfSpectrumEdges.add(se);
+        if (layerCost==-1) { // no lightpath
+
+            /**Add spectrum edges costs*/
+            for (EdgeElement e : p.getPathElement().getTraversedEdges())
+                //       if (getNumberOfSpectrumEdges(e, miniGrid) == bwWithGB)
+                if((se = getSpectrumEdge(e, miniGrid)) != null) {
+                    //se = getSpectrumEdge(e, miniGrid);
+                  //  listOfSpectrumEdges.add(se);
                     layerCost += se.getCost();
                 }
+            else {
+                    layerCost = Double.MAX_VALUE;
+                    break; // path is not continuous
+                }
 
-        /**Add transponder edges costs*/
-        if (!listOfSpectrumEdges.isEmpty()) {
-            layerCost += Weights.getTransponderEdgeCost();
-            for (int i = 1; i < listOfSpectrumEdges.size() - 1; i++) {
-                if (listOfSpectrumEdges.get(i).getEdgeElement().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement()))
-                    continue;
-                if (!listOfSpectrumEdges.get(i).getEdgeElement().getSourceVertex().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement().getDestinationVertex()))
-                    layerCost += Weights.getTransponderEdgeCost();
-            }
         }
-
+//        /**Add transponder edges costs*/
+//        if (!listOfSpectrumEdges.isEmpty()) {
+//            layerCost += Weights.getTransponderEdgeCost();
+//            for (int i = 1; i < listOfSpectrumEdges.size() - 1; i++) {
+//                if (listOfSpectrumEdges.get(i).getEdgeElement().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement()))
+//                    continue;
+//                if (!listOfSpectrumEdges.get(i).getEdgeElement().getSourceVertex().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement().getDestinationVertex()))
+//                    layerCost += Weights.getTransponderEdgeCost();
+//            }
+//        }
 
         /**Check if there is continuous path*/
-        int counterPath = 0;
-        for (LightPathEdge lpe : listLightPathEdges)
-            for (EdgeElement ee : lpe.getLightPath().getPathElement().getTraversedEdges())
-                counterPath++;
-        for (int i = 0; i < listOfSpectrumEdges.size()/* - 1*/; i++) {
-            if (i == 0)
-                counterPath++;
-            else if (!listOfSpectrumEdges.get(i).getEdgeElement().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement()))
-                counterPath++;
-        }
-
-        if (counterPath < p.getPathElement().getTraversedEdges().size())
-            layerCost = Double.MAX_VALUE;
+//        int counterPath = 0;
+//        for (LightPathEdge lpe : listLightPathEdges)
+//            for (EdgeElement ee : lpe.getLightPath().getPathElement().getTraversedEdges())
+//                counterPath++;
+//        for (int i = 0; i < listOfSpectrumEdges.size()/* - 1*/; i++) {
+//            if (i == 0)
+//                counterPath++;
+//            else if (!listOfSpectrumEdges.get(i).getEdgeElement().equals(listOfSpectrumEdges.get(i - 1).getEdgeElement()))
+//                counterPath++;
+//        }
+//
+//        if (counterPath < p.getPathElement().getTraversedEdges().size())
+//            layerCost = Double.MAX_VALUE;
 
         return layerCost;
     }
@@ -166,7 +172,7 @@ public class AuxiliaryGraph {
                 vertexes.add(selectedSpectrumEdges.get(0).getEdgeElement().getSourceVertex());
                 vertexes.add(selectedSpectrumEdges.get(0).getEdgeElement().getDestinationVertex());
                 if(NetworkState.getPathElement(vertexes) == null)
-                    log.error(" ");
+                    log.error(" path problem 1");
                 newLightPaths.add(new LightPath(NetworkState.getPathElement(vertexes), miniGrid, bwWithGB, bw, newConnection));
 
             } else {
@@ -178,7 +184,7 @@ public class AuxiliaryGraph {
                         vertexes.add(selectedSpectrumEdges.get(i - 1).getEdgeElement().getDestinationVertex());
 
                         if(NetworkState.getPathElement(vertexes) == null)
-                            log.error(" ");
+                            log.error(" path problem 2");
                         newLightPaths.add(new LightPath(NetworkState.getPathElement(vertexes), miniGrid, bwWithGB, bw, newConnection));
                         vertexes = new ArrayList<>();
                         vertexes.add(selectedSpectrumEdges.get(i).getEdgeElement().getSourceVertex());
@@ -187,7 +193,7 @@ public class AuxiliaryGraph {
                         vertexes.add(selectedSpectrumEdges.get(i).getEdgeElement().getDestinationVertex());
 
                         if(NetworkState.getPathElement(vertexes) == null)
-                            log.error(" ");
+                            log.error(" path problem 3");
                         newLightPaths.add(new LightPath(NetworkState.getPathElement(vertexes), miniGrid, bwWithGB, bw, newConnection));
                     }
                 }

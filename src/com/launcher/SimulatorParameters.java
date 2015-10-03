@@ -38,6 +38,7 @@ public class SimulatorParameters {
     private static List<Generator> listOfGenerators;
     private static int _runNumber = -1;
     private static int policy;
+    private static int blockingCounter = 0;
     private static final Logger log = LoggerFactory.getLogger(SimulatorParameters.class);
 
     /**
@@ -215,5 +216,16 @@ public class SimulatorParameters {
 
     public static int getNumberOfRuns() {
         return numberOfRuns;
+    }
+
+    public static int getBlockingCounter() {
+        return blockingCounter;
+    }
+    public static int increaseBlockingCounter() {
+        return blockingCounter++;
+    }
+
+    public static void setBlockingCounter(int blockingCounter) {
+        SimulatorParameters.blockingCounter = blockingCounter;
     }
 }

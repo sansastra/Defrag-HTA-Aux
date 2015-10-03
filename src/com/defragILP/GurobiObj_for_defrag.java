@@ -205,13 +205,13 @@ public class GurobiObj_for_defrag {
                     if (param.fitting[f][p]) {
                         for (int s = 0; s < param.number_of_slots; s++)
                             if (R[p][s].get(GRB.DoubleAttr.X) > 0.5) {
-                                   System.out.print("(Flow number " + param.flow_of_path_p[p] + ")");
+                              //     System.out.print("(Flow number " + param.flow_of_path_p[p] + ")");
                                 for (int l = 0; l < param.L; l++)
                                     if (param.traversing[p][l])
-                                        System.out.print("(" + param.nodelist.get(param.src_of_link[l]) + "," + param.nodelist.get(param.dst_of_link[l]) + ")Slot " + s);
+                                 //       System.out.print("(" + param.nodelist.get(param.src_of_link[l]) + "," + param.nodelist.get(param.dst_of_link[l]) + ")Slot " + s);
                                 if(R_max[p][s].get(GRB.DoubleAttr.X) > 0.5){
                                     maxSlotList.add(s);
-                                    System.out.println("(max used slot for flow " + param.flow_of_path_p[p] + " is slot" + s);
+                                //    System.out.println("(max used slot for flow " + param.flow_of_path_p[p] + " is slot" + s);
                                     max=true;
                                 }
                             }
@@ -219,20 +219,20 @@ public class GurobiObj_for_defrag {
                 }
                 if(!max)
                     maxSlotList.add(-1);
-                System.out.println();
+             //   System.out.println();
             }
 
-            System.out.println("maximum slot index per link:");
+        //    System.out.println("maximum slot index per link:");
             int max_utilized_index =0 ;
             for (int l=0; l<param.L; l++){
                 int max_index_slot  = (int) max_index_of_used_slots[l].get(GRB.DoubleAttr.X);
 
-                System.out.println("Maximum slot index used on link " + param.nodelist.get(param.src_of_link[l]) + "-" + param.nodelist.get(param.dst_of_link[l])
-                        + " is  " + max_index_slot);
+           //     System.out.println("Maximum slot index used on link " + param.nodelist.get(param.src_of_link[l]) + "-" + param.nodelist.get(param.dst_of_link[l])
+           //             + " is  " + max_index_slot);
                 if(max_index_slot >= max_utilized_index )
                     max_utilized_index = max_index_slot;
             }
-            System.out.println();
+         //   System.out.println();
             System.out.println("Maximum slot Utilization: " + max_utilized_index);
 
             model.dispose();

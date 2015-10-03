@@ -10,7 +10,7 @@ public class Weights {
     private static int POLICY;
     private static double transponderEdgeCost;
     private static double seFactor;
-    private static int lpeFactor1;
+    private static double lpeFactor1;
     private static double lpeFactor2;
 
     public Weights(int policy) {
@@ -43,14 +43,19 @@ public class Weights {
             case 4:
                 transponderEdgeCost = 0;
                 break;
-            /** Fragmentation*/
+            /** Spectral Fragmentation*/
             case 5:
+                lpeFactor1 =1e-5;
+                lpeFactor2 = 1;
+                transponderEdgeCost = 1e9;
+                break;
+            /** Time Fragmentation*/
+            case 6:
+                lpeFactor1 =1e-5;
+                lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
                 break;
             /** FirstFit*/
-            case 6:
-                transponderEdgeCost = 1e9;
-                break;
             case 7:
                 transponderEdgeCost = 1e9;
                 break;
@@ -74,6 +79,10 @@ public class Weights {
 
         if (POLICY == 4)
             return lp.getNumberOfMiniGridsUsedAlongLP();
+        if ((POLICY == 5) || (POLICY == 6))
+            return lpeFactor1*lp.getFirstMiniGrid() + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
+        if (POLICY==7)
+            return lp.getFirstMiniGrid();
 
         return lpeFactor1 + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
     }
