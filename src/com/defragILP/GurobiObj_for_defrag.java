@@ -108,23 +108,24 @@ public class GurobiObj_for_defrag {
 
             }
             System.out.println(constrCnt + " done.");
-     //bandwidth satisfaction constraint
-            System.out.print("Generating constraints new:");
-            for (int f=0; f<param.F; f++) {
 
-                expr1 = new GRBLinExpr();
-                for (int p = 0; p < param.MPLS_P; p++) {
-                    if (param.fitting[f][p]) {
-                        for (int s = 0; s < param.number_of_slots; s++)
-                            expr1.addTerm(1, R[p][s]); //
-                    }
-                }
-                model.addConstr(expr1, GRB.EQUAL, param.Demand[f], "single path routing for flow " + f);
-
-                constrCnt ++;
-
-            }
-            System.out.println(constrCnt + " done.");
+//     //bandwidth satisfaction constraint
+//            System.out.print("Generating constraints new:");
+//            for (int f=0; f<param.F; f++) {
+//
+//                expr1 = new GRBLinExpr();
+//                for (int p = 0; p < param.MPLS_P; p++) {
+//                    if (param.fitting[f][p]) {
+//                        for (int s = 0; s < param.number_of_slots; s++)
+//                            expr1.addTerm(1, R[p][s]); //
+//                    }
+//                }
+//                model.addConstr(expr1, GRB.EQUAL, param.Demand[f], "single path routing for flow " + f);
+//
+//                constrCnt ++;
+//
+//            }
+//            System.out.println(constrCnt + " done.");
 
 
 // demand satisfaction constraint

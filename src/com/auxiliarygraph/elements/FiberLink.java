@@ -37,21 +37,28 @@ public class FiberLink {
     public List<Integer> getFreeMiniGrids(int n) {
 
         List<Integer> freeMiniGrids = new ArrayList<>();
+        List<Integer> tempfreeMiniGrids = new ArrayList<>();
         for (Map.Entry<Integer, Integer> entry : miniGrids.entrySet()) {
             if (entry.getValue() == 0)
                 freeMiniGrids.add(entry.getKey());
         }
 
         if (n > 1) {
-            for (int i = 0; i < freeMiniGrids.size() -n + 1; i++)
-                for (int j = i ; j < i + n-1; j++) {
-                    if (freeMiniGrids.get(j) != freeMiniGrids.get(j + 1) - 1) {
-                        freeMiniGrids.remove(i);
+            int count;
+            for (int i = 0; i < freeMiniGrids.size() -n + 1; i++) {
+                count = 1;
+                for (int j = i; j < i + n - 1; j++) {
+                    if (freeMiniGrids.get(j) == freeMiniGrids.get(j + 1) - 1)
+                        count++;
+                    else
                         break;
-                    }
+
                 }
-            for (int i = freeMiniGrids.size() -n + 1; i < freeMiniGrids.size(); i++)
-                freeMiniGrids.remove(i);
+                if (count == n)
+                    tempfreeMiniGrids.add(freeMiniGrids.get(i));
+            }
+
+            freeMiniGrids =tempfreeMiniGrids;
 
         }
 
@@ -155,81 +162,100 @@ public class FiberLink {
     }
 
     public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bw,double ht) {
-        if(spectrumLayerIndex+bw-1 <= totalNumberOfMiniGrids) {
-            double timefragmentationIndex =0;
+        double timefragmentationIndex = 0.0;
+        if (miniGrids.size() > 0) {
             int start = getStartingIndexOfBlock(spectrumLayerIndex);
             int end = getEndingIndexOfBlock(spectrumLayerIndex, bw);
             // wont work with guard band
-            List<Double> holdingTime ;
-            if (start!=end) {
+            List<Double> holdingTime;
+            if (start != end) {
                 holdingTime = getHoldingTimeOfBlock(start, end);
                 if (holdingTime.size() != end - start - bw + 1) {
                     log.error("BUG: fragmentation time block indices is in error 2");
+                    holdingTime = getHoldingTimeOfBlock(start, end); // debug
                     System.exit(0);
                 }
-            }
-            else
-            holdingTime=new ArrayList<>();
+            } else
+                return timefragmentationIndex;
+
             for (int i = 0; i < bw; i++)
                 holdingTime.add(ht);
 
             double[] htArray = new double[holdingTime.size()];
-            double max1= Collections.max(holdingTime);
+            double max1 = Collections.max(holdingTime);
             for (int i = 0; i < holdingTime.size(); i++) {
-                htArray[i]= Math.pow((max1 - holdingTime.get(i)), 2);
+                htArray[i] = Math.pow((max1 - holdingTime.get(i)), 2);
                 timefragmentationIndex += htArray[i];
-                timefragmentationIndex = timefragmentationIndex/htArray.length;
+                timefragmentationIndex = timefragmentationIndex / htArray.length;
             }
-
-
-            return (timefragmentationIndex);
         }
-        else
-            return (Double.MAX_VALUE); // spectrum index will not be used
-        }
+            return timefragmentationIndex ;
+    }
+
 
     public int getStartingIndexOfBlock(int initialId) {
-        int start=initialId;
+      //  int start=initialId;
         int temp = initialId;
-        while(miniGrids.get(temp)!=0){
-            if (temp !=0) {
-                start = temp;
+        while(temp>1){
+            if (miniGrids.get(temp-1) !=0) {
                 temp--;
+              //  start = temp;
             }
             else {
-                start = temp;
+              //  start = temp;
                 break;
             }
         }
-        return start;
+        return temp;
     }
 
     public int getEndingIndexOfBlock(int initialId, int bw) {
-        int end=initialId;
+      //  int end=initialId;
         int temp = initialId + bw - 1;
-        while (miniGrids.get(temp) != 0) {
-            if (temp != totalNumberOfMiniGrids) {
-                end = temp;
+        while (temp < totalNumberOfMiniGrids) {
+            if (miniGrids.get(temp+1) != 0) {
+               // end = temp;
                 temp++;
             } else {
-                end = temp;
                 break;
             }
         }
-        return end;
+        return temp;
     }
 
-    public List<Double> getHoldingTimeOfBlock(int start,int end){
+    public List<Double> getHoldingTimeOfBlock(int start,int end) {
         List<LightPath> listOfLPs = NetworkState.getListOfTraversingLightPaths(this.edgeElement);
         List<Double> holdingTime = new ArrayList<>();
-        while (start!=end+1)
-                for (LightPath lp :  listOfLPs)
-                    if(lp.containsMiniGrid(start))
-                        for (Map.Entry<Double,Connection> entry : lp.getConnectionMap().entrySet())
+        boolean check;
+       // if (listOfLPs.size() > 0)
+            while (start <= end) {
+                check = false;
+                for (LightPath lp : listOfLPs)
+                    if (lp.containsMiniGrid(start)) {
+                        for (Map.Entry<Double, Connection> entry : lp.getConnectionMap().entrySet()) {
                             for (int i = 0; i < entry.getValue().getBw(); i++) {
-                                holdingTime.add(entry.getKey());
-                                start++;
-                            }
+                                   holdingTime.add(entry.getKey());
+                                }
+                                start += entry.getValue().getBw();
+                            check = true;
+                        }
+//                        check = false;
+//                        for (Map.Entry<Double, Connection> entry : lp.getConnectionMap().entrySet()) {
+//                            if (entry.getValue().getMiniGrid() == start) {
+//                                for (int i = 0; i < entry.getValue().getBw(); i++) {
+//                                    holdingTime.add(entry.getKey());
+//                                }
+//                                start += entry.getValue().getBw()-1;
+//                                check = true;
+//                                break;
+//                            }
+//                        }
+//                        if (check)
+//                            break;
+                    }
+                if(!check)
+                    start++;
+            }
 
         return holdingTime;
     }
