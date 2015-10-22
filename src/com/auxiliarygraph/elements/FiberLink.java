@@ -1,7 +1,10 @@
 package com.auxiliarygraph.elements;
 
+import com.auxiliarygraph.AuxiliaryGraph;
 import com.auxiliarygraph.NetworkState;
 import com.graph.elements.edge.EdgeElement;
+import com.launcher.Launcher;
+import com.launcher.SimulatorParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +28,10 @@ public class FiberLink {
 
     private static final Logger log = LoggerFactory.getLogger(FiberLink.class);
 
-    public FiberLink(int granularity, int spectrumWidth, EdgeElement edgeElement) {
+    public FiberLink( int totalslots, EdgeElement edgeElement) {
         this.edgeElement = edgeElement;
         miniGrids = new HashMap<>();
-        totalNumberOfMiniGrids = spectrumWidth / granularity;
+        totalNumberOfMiniGrids =  totalslots;
         for (int i = 1; i <= totalNumberOfMiniGrids; i++) {
             miniGrids.put(i, 0);
         }
@@ -161,30 +164,30 @@ public class FiberLink {
         return (1-fragmentationIndex);
     }
 
-    public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bw,double ht) {
+    public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bwWithGB,double ht) {
         double timefragmentationIndex = 0.0;
         if (miniGrids.size() > 0) {
             int start = getStartingIndexOfBlock(spectrumLayerIndex);
-            int end = getEndingIndexOfBlock(spectrumLayerIndex, bw);
-            // wont work with guard band
+            int end = getEndingIndexOfBlock(spectrumLayerIndex, bwWithGB);
+
             List<Double> holdingTime;
             if (start != end) {
                 holdingTime = getHoldingTimeOfBlock(start, end);
-                if (holdingTime.size() != end - start - bw + 1) {
+                if (holdingTime.size() != end - start - bwWithGB + 1) {
                     log.error("BUG: fragmentation time block indices is in error 2");
                     holdingTime = getHoldingTimeOfBlock(start, end); // debug
                     System.exit(0);
                 }
             } else
-                return timefragmentationIndex;
+                return 100; //*timefragmentationIndex; // when this request is alone
 
-            for (int i = 0; i < bw; i++)
+            for (int i = 0; i < bwWithGB; i++)
                 holdingTime.add(ht);
 
             double[] htArray = new double[holdingTime.size()];
             double max1 = Collections.max(holdingTime);
             for (int i = 0; i < holdingTime.size(); i++) {
-                htArray[i] = Math.pow((max1 - holdingTime.get(i)), 2);
+                htArray[i] = Math.pow((max1 - holdingTime.get(i))/max1, 2);
                 timefragmentationIndex += htArray[i];
                 timefragmentationIndex = timefragmentationIndex / htArray.length;
             }
@@ -209,9 +212,9 @@ public class FiberLink {
         return temp;
     }
 
-    public int getEndingIndexOfBlock(int initialId, int bw) {
+    public int getEndingIndexOfBlock(int initialId, int bwWithGB) {
       //  int end=initialId;
-        int temp = initialId + bw - 1;
+        int temp = initialId + bwWithGB - 1;
         while (temp < totalNumberOfMiniGrids) {
             if (miniGrids.get(temp+1) != 0) {
                // end = temp;
@@ -227,34 +230,34 @@ public class FiberLink {
         List<LightPath> listOfLPs = NetworkState.getListOfTraversingLightPaths(this.edgeElement);
         List<Double> holdingTime = new ArrayList<>();
         boolean check;
+        double max;
        // if (listOfLPs.size() > 0)
             while (start <= end) {
                 check = false;
                 for (LightPath lp : listOfLPs)
                     if (lp.containsMiniGrid(start)) {
+                        max=0;
                         for (Map.Entry<Double, Connection> entry : lp.getConnectionMap().entrySet()) {
                             for (int i = 0; i < entry.getValue().getBw(); i++) {
                                    holdingTime.add(entry.getKey());
+                                if(entry.getKey()>max)
+                                    max = entry.getKey();
                                 }
                                 start += entry.getValue().getBw();
+
                             check = true;
                         }
-//                        check = false;
-//                        for (Map.Entry<Double, Connection> entry : lp.getConnectionMap().entrySet()) {
-//                            if (entry.getValue().getMiniGrid() == start) {
-//                                for (int i = 0; i < entry.getValue().getBw(); i++) {
-//                                    holdingTime.add(entry.getKey());
-//                                }
-//                                start += entry.getValue().getBw()-1;
-//                                check = true;
-//                                break;
-//                            }
-//                        }
-//                        if (check)
-//                            break;
+                        for (int i = 0; i <  NetworkState.getNumOfMiniGridsPerGB(); i++) {
+                            if(miniGrids.get(start)==2) {
+                                holdingTime.add(max);
+                                start++;
+                            }
+                        }
+
                     }
-                if(!check)
+                if(!check) {
                     start++;
+                }
             }
 
         return holdingTime;

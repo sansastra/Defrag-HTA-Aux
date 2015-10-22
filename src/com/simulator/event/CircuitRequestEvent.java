@@ -57,7 +57,7 @@ public class CircuitRequestEvent extends Event {
         /** Get a random destination following a uniform distribution */
         TrafficFlow selectedFlow = generator.getRandomFlow(trafficClass.getType());
 
-        int numberOfMiniGrids = (int) (trafficClass.getBw() / SimulatorParameters.getModulationFormat()) / SimulatorParameters.getGridGranularity();
+        int numberOfMiniGrids = (int) (trafficClass.getBw() / (SimulatorParameters.getModulationFormat() *SimulatorParameters.getGridGranularity()));
         /** Create a new Auxiliary Graph*/
         AuxiliaryGraph auxiliaryGraph = new AuxiliaryGraph(generator.getVertex().getVertexID(), selectedFlow.getDstNode().getVertexID(), numberOfMiniGrids, Scheduler.currentTime(), holdingTime, isUnKnown);
 

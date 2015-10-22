@@ -157,9 +157,11 @@ public class ImportTopologyFromSNDFile extends com.graph.topology.importers.Impo
                             2));
 
             double delay = distance / 29.9792458; // (in ms)
-
-            EdgeParams params1 = new BasicEdgeParams(edge1, delay, 1, Double.valueOf(temp1[5]));
-            EdgeParams params2 = new BasicEdgeParams(edge2, delay, 1, Double.valueOf(temp1[5]));
+            double capacity = (double) SimulatorParameters.getTotalCapacity();
+            EdgeParams params1 = new BasicEdgeParams(edge1, delay, 1, capacity);
+            EdgeParams params2 = new BasicEdgeParams(edge2, delay, 1, capacity);
+           // EdgeParams params1 = new BasicEdgeParams(edge1, delay, 1, Double.valueOf(temp1[5]));
+          //  EdgeParams params2 = new BasicEdgeParams(edge2, delay, 1, Double.valueOf(temp1[5]));
             edge1.setEdgeParams(params1);
             edge2.setEdgeParams(params2);
             graph.addEdge(edge1);

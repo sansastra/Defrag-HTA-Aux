@@ -161,17 +161,17 @@ public class LightPath {
     public void removeConnectionAndCompress(Connection connection) {
 
         connectionMap.remove(connection.getStartingTime());
-
+// set free mini grids on the fiber links traversed by this connection
         int lastMiniGrid = miniGridIds.size() - 1;
         for (int i = lastMiniGrid; i > lastMiniGrid - connection.getBw(); i--)
             for (EdgeElement e : pathElement.getTraversedEdges())
                 NetworkState.getFiberLink(e.getEdgeID()).setFreeMiniGrid(miniGridIds.get(i));
-
+// replace guard band also
         lastMiniGrid = miniGridIds.size() - 1 - (int) connection.getBw();
         for (int i = lastMiniGrid; i > lastMiniGrid - GUARD_BANDS; i--)
             for (EdgeElement e : pathElement.getTraversedEdges())
                 NetworkState.getFiberLink(e.getEdgeID()).setGuardBandMiniGrid(miniGridIds.get(i));
-
+// remove minigrid IDs
         for (int i = 0; i < connection.getBw(); i++)
             miniGridIds.remove(miniGridIds.size() - 1);
 

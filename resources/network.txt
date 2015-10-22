@@ -5,12 +5,12 @@
 #
 
 META (
-  Arrival_process ( EXP-5.0 )
+  Arrival_process ( EXP-1.0 )
   Traffic_classes ( 1 )
-  Bandwidths ( 1.0 )
+  Bandwidths ( 100 )
   Scaling ( 1.0 )
   Holding_time ( EXP-10.0-1.0 )
-  Connection_feature ( 0.5 )
+  Connection_feature ( 0.0 )
  )
 
 # NODE SECTION
@@ -29,9 +29,9 @@ NODES (
 # <link_id> ( <source> <target> ) <pre_installed_capacity> <pre_installed_capacity_cost> <routing_cost> <setup_cost> ( {<module_capacity> <module_cost>}* )
 
 LINKS (
-  L1 ( N1 N2 ) 11000.00 0.00 67.80 0.00 ( 1000.00 950000.00 4000.00 1090000.00 )
-  L2 ( N2 N3 ) 7000.00 0.00 67.80 0.00 ( 1000.00 875000.00 4000.00 1015000.00 )
-  L3 ( N3 N4 ) 7000.00 0.00 67.80 0.00 ( 1000.00 875000.00 4000.00 1015000.00 )
+  L1 ( N1 N2 ) 0.00 0.00 ( 100.00 0.00 )
+  L2 ( N2 N3 ) 0.00 0.00 ( 100.00 0.00 )
+  L3 ( N3 N4 ) 0.00 0.00 ( 100.00 0.00 )
 )
 
 # DEMAND SECTION
@@ -41,9 +41,9 @@ LINKS (
 # 1 Gbps demands ( routing_unit 1)
 
 DEMANDS (
-  D12 ( N1 N2 ) 1 16.00 UNLIMITED
-  D12 ( N1 N3 ) 1 16.00 UNLIMITED
-  D12 ( N1 N4 ) 1 16.00 UNLIMITED
+  D12 ( N1 N2 ) 1 1.00 UNLIMITED
+  D12 ( N1 N3 ) 1 1.00 UNLIMITED
+  D12 ( N1 N4 ) 1 1.00 UNLIMITED
 )
 
 # ADMISSIBLE PATHS SECTION

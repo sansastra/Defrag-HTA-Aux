@@ -106,21 +106,33 @@ public class AuxiliaryGraph {
             layerCost = lpe.getCost();
 
         if (layerCost==-1) { // no lightpath
+            int count =0;
+            layerCost =0;
 
             /**Add spectrum edges costs*/
             for (EdgeElement e : p.getPathElement().getTraversedEdges())
                 //       if (getNumberOfSpectrumEdges(e, miniGrid) == bwWithGB)
                 if((se = getSpectrumEdge(e, miniGrid)) != null) {
-                    //se = getSpectrumEdge(e, miniGrid);
-                  //  listOfSpectrumEdges.add(se);
-                    layerCost += se.getCost();
-                }
-            else {
-                    layerCost = Double.MAX_VALUE;
-                    break; // path is not continuous
-                }
+                    if (!(NetworkState.getFiberLink(e.getEdgeID()).areNextMiniGridsAvailable(miniGrid,bwWithGB-1))){
+                        log.error("An error in finding free spectrum edges");
+                        System.exit(0);
+                    }
 
+                    //se = getSpectrumEdge(e, miniGrid);
+                    //  listOfSpectrumEdges.add(se);
+                    layerCost += se.getCost();
+                    count++;
+                }
+             if (!(count == p.getPathElement().getTraversedEdges().size())) {
+                 layerCost = Double.MAX_VALUE; // minigrid is not available on all the path elements
+             }
+             else {
+
+             }
         }
+
+        return layerCost;
+    }
 //        /**Add transponder edges costs*/
 //        if (!listOfSpectrumEdges.isEmpty()) {
 //            layerCost += Weights.getTransponderEdgeCost();
@@ -147,8 +159,8 @@ public class AuxiliaryGraph {
 //        if (counterPath < p.getPathElement().getTraversedEdges().size())
 //            layerCost = Double.MAX_VALUE;
 
-        return layerCost;
-    }
+//        return layerCost;
+//    }
 
     public void setConnection(Path path, int miniGrid) {
 
@@ -211,13 +223,13 @@ public class AuxiliaryGraph {
         NetworkState.getListOfLightPaths().addAll(newLightPaths);
     }
 
-    public int getNumberOfSpectrumEdges(EdgeElement e, int spectrumLayerIndex) {
-        int counter = 0;
-        for (int i = spectrumLayerIndex; i < spectrumLayerIndex + bwWithGB; i++)
-            if (getSpectrumEdge(e, i) != null)
-                counter++;
-        return counter;
-    }
+//    public int getNumberOfSpectrumEdges(EdgeElement e, int spectrumLayerIndex) {
+//        int counter = 0;
+//        for (int i = spectrumLayerIndex; i < spectrumLayerIndex + bwWithGB; i++)
+//            if (getSpectrumEdge(e, i) != null)
+//                counter++;
+//        return counter;
+//    }
 
     public SpectrumEdge getSpectrumEdge(EdgeElement e, int spectrumLayerIndex) {
         for (SpectrumEdge se : listOfSE)

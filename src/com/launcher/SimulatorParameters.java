@@ -31,13 +31,14 @@ public class SimulatorParameters {
     private static List<byte[]> listOfSeeds;
     private static int seedCounter;
     private static int modulationFormat;
-    private static int gridGranularity;
+    private static double gridGranularity;
     private static int numOfMiniGridsPerGB;
     private static int txCapacityOfTransponders;
     private static int maxReservedMiniGrids;
     private static List<Generator> listOfGenerators;
     private static int _runNumber = -1;
     private static int policy;
+    private static int capacity;
     private static int blockingCounter = 0;
     private static final Logger log = LoggerFactory.getLogger(SimulatorParameters.class);
 
@@ -148,7 +149,7 @@ public class SimulatorParameters {
                         numberOfRuns = Integer.parseInt(line);
                         break;
                     case 4:
-                        gridGranularity = Integer.parseInt(line);
+                        gridGranularity = Double.parseDouble(line);
                         break;
                     case 5:
                         modulationFormat = Integer.parseInt(line);
@@ -157,15 +158,18 @@ public class SimulatorParameters {
                         numOfMiniGridsPerGB = Integer.parseInt(line);
                         break;
                     case 7:
-                        txCapacityOfTransponders = Integer.parseInt(line);
+                        capacity = Integer.parseInt(line);
                         break;
                     case 8:
-                        maxReservedMiniGrids = Integer.parseInt(line);
+                        txCapacityOfTransponders = Integer.parseInt(line);
                         break;
                     case 9:
-                        policy = Integer.parseInt(line);
+                        maxReservedMiniGrids = Integer.parseInt(line);
                         break;
                     case 10:
+                        policy = Integer.parseInt(line);
+                        break;
+                    case 11:
 //                        SeedGenerator seedGenerator = new SecureRandomSeedGenerator();
 //                        byte [] seed;
 //                        try {
@@ -210,13 +214,14 @@ public class SimulatorParameters {
         return modulationFormat;
     }
 
-    public static int getGridGranularity() {
+    public static double getGridGranularity() {
         return gridGranularity;
     }
 
     public static int getNumberOfRuns() {
         return numberOfRuns;
     }
+    public static int getTotalCapacity(){return capacity ;}
 
     public static int getBlockingCounter() {
         return blockingCounter;

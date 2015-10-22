@@ -12,6 +12,8 @@ public class Weights {
     private static double seFactor;
     private static double lpeFactor1;
     private static double lpeFactor2;
+    private static double timeFactor;
+    private static double fragmentFactor;
 
     public Weights(int policy) {
 
@@ -45,44 +47,56 @@ public class Weights {
                 break;
             /** Spectral Fragmentation*/
             case 5:
-                lpeFactor1 =1e-5;
+                lpeFactor1 = 0;
                 lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
+                timeFactor =0;
+                fragmentFactor=1;
                 break;
             /** Time Fragmentation*/
             case 6:
-                lpeFactor1 =1e-5;
+                lpeFactor1 = 0;
                 lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
+                timeFactor =1;
+                fragmentFactor=0;
+                break;
+            /** Spectral and Time Fragmentation */
+            case 7:
+                lpeFactor1 = 0;
+                lpeFactor2 = 1;
+                transponderEdgeCost = 1e9;
+                timeFactor =0.1;
+                fragmentFactor= 1- timeFactor;
                 break;
             /** FirstFit*/
-            case 7:
+            case 8:
+                lpeFactor1 = 0;
+                lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
                 break;
         }
     }
 
     public static double getSpectrumEdgeCost(String edgeID, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB, double ht) {
-
-        if (POLICY == 4)
-            seFactor = NetworkState.getFiberLink(edgeID).getNumberOfMiniGridsUsed();
-        else if (POLICY == 5)
-            seFactor = 1e5*NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB);
-        else if (POLICY == 6)
-            seFactor = 1e5*NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht);
-        else if (POLICY == 7)
+        if (POLICY == 8)
             return spectrumLayerIndex ;
-        return seFactor + 1e-5 * spectrumLayerIndex;
+//        if (POLICY == 4)
+//            seFactor = NetworkState.getFiberLink(edgeID).getNumberOfMiniGridsUsed();
+
+        return (timeFactor*(NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht))+
+                fragmentFactor* (NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB))) +1e-5 * spectrumLayerIndex;
+        //return seFactor + 1e-5 * spectrumLayerIndex;
     }
 
     public static double getLightPathEdgeCost(LightPath lp) {
 
         if (POLICY == 4)
             return lp.getNumberOfMiniGridsUsedAlongLP();
-        if ((POLICY == 5) || (POLICY == 6))
-            return lpeFactor1*lp.getFirstMiniGrid() + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
-        if (POLICY==7)
-            return lp.getFirstMiniGrid();
+//        if ((POLICY == 5) || (POLICY == 6)|| (POLICY == 7))
+//            return lpeFactor1*lp.getFirstMiniGrid() + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
+//        if (POLICY==8)
+//            return lp.getFirstMiniGrid();
 
         return lpeFactor1 + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
     }
@@ -90,6 +104,5 @@ public class Weights {
     public static double getTransponderEdgeCost() {
         return transponderEdgeCost * 2;
     }
-
 
 }

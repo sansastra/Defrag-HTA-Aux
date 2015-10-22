@@ -9,6 +9,7 @@ import com.graph.elements.vertex.VertexElement;
 import com.graph.graphcontroller.Gcontroller;
 import com.graph.path.PathElement;
 import com.inputdata.InputParameters;
+import com.launcher.SimulatorParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,24 +23,25 @@ public class NetworkState {
     private static Map<String, FiberLink> fiberLinksMap;
     private static List<LightPath> listOfLightPaths;
     private static List<Path> listOfPaths;
-    private static int transponderCapacity;
+    private static double transponderCapacity;
     private static int numOfMiniGridsPerGB;
+    private static double totalNumberOfSlots;
 
     private static final Logger log = LoggerFactory.getLogger(NetworkState.class);
 
-    public NetworkState(Gcontroller graph, int granularity, int txCapacityOfTransponders, int numOfMiniGridsPerGB, Set<PathElement> setOfPathElements, int policy) {
+    public NetworkState(Gcontroller graph, double granularity, int txCapacityOfTransponders, int numOfMiniGridsPerGB, Set<PathElement> setOfPathElements, int policy) {
 
         this.fiberLinksMap = new HashMap<>();
         this.listOfLightPaths = new ArrayList<>();
         this.listOfPaths = new ArrayList<>();
         this.transponderCapacity = txCapacityOfTransponders / granularity;
         this.numOfMiniGridsPerGB = numOfMiniGridsPerGB;
-
+        this.totalNumberOfSlots = SimulatorParameters.getTotalCapacity()/granularity;
         for (PathElement pe : setOfPathElements)
             listOfPaths.add(new Path(pe));
 
         for (EdgeElement edgeElement : graph.getEdgeSet())
-            fiberLinksMap.put(edgeElement.getEdgeID(), new FiberLink(granularity, (int) edgeElement.getEdgeParams().getMaxCapacity(), edgeElement));
+            fiberLinksMap.put(edgeElement.getEdgeID(), new FiberLink((int) totalNumberOfSlots, edgeElement));
 
         new Weights(policy);
     }
@@ -103,7 +105,7 @@ public class NetworkState {
         return listOfLightPaths;
     }
 
-    public static int getTransponderCapacity() {
+    public static double getTransponderCapacity() {
         return transponderCapacity;
     }
 
