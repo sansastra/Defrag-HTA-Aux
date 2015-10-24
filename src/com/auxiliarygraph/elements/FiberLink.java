@@ -28,10 +28,10 @@ public class FiberLink {
 
     private static final Logger log = LoggerFactory.getLogger(FiberLink.class);
 
-    public FiberLink( int totalslots, EdgeElement edgeElement) {
+    public FiberLink( int totalSlots, EdgeElement edgeElement) {
         this.edgeElement = edgeElement;
         miniGrids = new HashMap<>();
-        totalNumberOfMiniGrids =  totalslots;
+        totalNumberOfMiniGrids = totalSlots;
         for (int i = 1; i <= totalNumberOfMiniGrids; i++) {
             miniGrids.put(i, 0);
         }
@@ -173,11 +173,11 @@ public class FiberLink {
             List<Double> holdingTime;
             if (start != end) {
                 holdingTime = getHoldingTimeOfBlock(start, end);
-                if (holdingTime.size() != end - start - bwWithGB + 1) {
-                    log.error("BUG: fragmentation time block indices is in error 2");
-                    holdingTime = getHoldingTimeOfBlock(start, end); // debug
-                    System.exit(0);
-                }
+//                if (holdingTime.size() != end - start - bwWithGB + 1) {
+//                    log.error("BUG: fragmentation time block indices is in error 2");
+//                    holdingTime = getHoldingTimeOfBlock(start, end); // debug
+//                    System.exit(0);
+//                }
             } else
                 return 100; //*timefragmentationIndex; // when this request is alone
 
@@ -187,7 +187,7 @@ public class FiberLink {
             double[] htArray = new double[holdingTime.size()];
             double max1 = Collections.max(holdingTime);
             for (int i = 0; i < holdingTime.size(); i++) {
-                htArray[i] = Math.pow((max1 - holdingTime.get(i))/max1, 2);
+                htArray[i] = Math.pow((1 - holdingTime.get(i)/max1), 2);
                 timefragmentationIndex += htArray[i];
                 timefragmentationIndex = timefragmentationIndex / htArray.length;
             }
@@ -248,10 +248,10 @@ public class FiberLink {
                             check = true;
                         }
                         for (int i = 0; i <  NetworkState.getNumOfMiniGridsPerGB(); i++) {
-                            if(miniGrids.get(start)==2) {
+        //                    if(miniGrids.get(start)==2) {
                                 holdingTime.add(max);
                                 start++;
-                            }
+         //                   }
                         }
 
                     }

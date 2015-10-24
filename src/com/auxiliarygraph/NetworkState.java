@@ -29,19 +29,19 @@ public class NetworkState {
 
     private static final Logger log = LoggerFactory.getLogger(NetworkState.class);
 
-    public NetworkState(Gcontroller graph, double granularity, int txCapacityOfTransponders, int numOfMiniGridsPerGB, Set<PathElement> setOfPathElements, int policy) {
+    public NetworkState(Gcontroller graph, double granularity, int capacity, int txCapacityOfTransponders, int numOfMiniGridsPerGB, Set<PathElement> setOfPathElements, int policy) {
 
         this.fiberLinksMap = new HashMap<>();
         this.listOfLightPaths = new ArrayList<>();
         this.listOfPaths = new ArrayList<>();
         this.transponderCapacity = txCapacityOfTransponders / granularity;
         this.numOfMiniGridsPerGB = numOfMiniGridsPerGB;
-        this.totalNumberOfSlots = SimulatorParameters.getTotalCapacity()/granularity;
+        this.totalNumberOfSlots = capacity/granularity;
         for (PathElement pe : setOfPathElements)
             listOfPaths.add(new Path(pe));
 
         for (EdgeElement edgeElement : graph.getEdgeSet())
-            fiberLinksMap.put(edgeElement.getEdgeID(), new FiberLink((int) totalNumberOfSlots, edgeElement));
+            fiberLinksMap.put(edgeElement.getEdgeID(), new FiberLink((int)totalNumberOfSlots, edgeElement));
 
         new Weights(policy);
     }

@@ -9,11 +9,11 @@ nsf-network-newK2.txt
 # g: grid granularity (Ghz) //or 12.5 GHz and modulation format=2
 12.5
 # Modulation format (bits/s/Hz)
-2
+4
 # B: number of mini-grids consumed by a guard band
 2
 # Total fiber capacity (in GHz)
-4475
+2500
 # C: transmission capacity of transponders (Ghz) // apply non-zero only to time fragmentation
 0
 # M: maximum allowed number of reserved mini-grids

@@ -49,7 +49,7 @@ public class SimulatorParameters {
 
         /** Input network from a SNDLib file */
         new InputParameters(networkFile);
-        new NetworkState(InputParameters.getGraph(), gridGranularity, txCapacityOfTransponders, numOfMiniGridsPerGB, setPaths(ImportTopologyFromSNDFile.getPaths()), policy);
+        new NetworkState(InputParameters.getGraph(), gridGranularity, capacity, txCapacityOfTransponders, numOfMiniGridsPerGB, setPaths(ImportTopologyFromSNDFile.getPaths()), policy);
         runSimulation();
     }
 
@@ -75,7 +75,7 @@ public class SimulatorParameters {
 
         InputParameters.readNetworkParameters();
         InputParameters.setNodes();
-        new NetworkState(InputParameters.getGraph(), gridGranularity, txCapacityOfTransponders, numOfMiniGridsPerGB, setPaths(ImportTopologyFromSNDFile.getPaths()), policy);
+        new NetworkState(InputParameters.getGraph(), gridGranularity,capacity, txCapacityOfTransponders, numOfMiniGridsPerGB, setPaths(ImportTopologyFromSNDFile.getPaths()), policy);
         listOfGenerators = new ArrayList<>();
         for (Source s : InputParameters.getListOfSources())
             listOfGenerators.add(new Generator(s.getVertex(), s.getListOfTrafficDemands(), s.getArrivalRate(), s.getTrafficClassProb(), s.getDestinationProb()));
