@@ -171,7 +171,7 @@ public class FiberLink {
             int end = getEndingIndexOfBlock(spectrumLayerIndex, bwWithGB);
 
             List<Double> holdingTime;
-            if (start != end) {
+            if (start != end - bwWithGB + 1) {
                 holdingTime = getHoldingTimeOfBlock(start, end);
 //                if (holdingTime.size() != end - start - bwWithGB + 1) {
 //                    log.error("BUG: fragmentation time block indices is in error 2");
@@ -187,10 +187,10 @@ public class FiberLink {
             double[] htArray = new double[holdingTime.size()];
             double max1 = Collections.max(holdingTime);
             for (int i = 0; i < holdingTime.size(); i++) {
-                htArray[i] = Math.pow((1 - holdingTime.get(i)/max1), 2);
+                htArray[i] = 1 - holdingTime.get(i)/max1; //Math.pow((1 - holdingTime.get(i)/max1), 2);
                 timefragmentationIndex += htArray[i];
-                timefragmentationIndex = timefragmentationIndex / htArray.length;
             }
+            timefragmentationIndex = timefragmentationIndex / Math.pow(htArray.length,2);
         }
             return timefragmentationIndex ;
     }

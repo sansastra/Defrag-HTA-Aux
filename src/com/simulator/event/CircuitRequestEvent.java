@@ -44,7 +44,7 @@ public class CircuitRequestEvent extends Event {
 
     @Override
     public void occur() {
-        int counter =0;
+    //    int counter =0;
         double holdingTime;
         boolean isUnKnown = generator.getRandomUnknown(trafficClass.getType());
 

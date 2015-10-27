@@ -98,7 +98,7 @@ public class Weights {
 //        if (POLICY==8)
 //            return lp.getFirstMiniGrid();
 
-        return lpeFactor1 + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
+        return 0; //lpeFactor1 + lp.getPathElement().getTraversedEdges().size() * lpeFactor2;
     }
 
     public static double getTransponderEdgeCost() {
