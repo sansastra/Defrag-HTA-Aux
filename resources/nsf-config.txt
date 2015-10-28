@@ -15,11 +15,11 @@ nsf-network-newK2.txt
 # Total fiber capacity (in GHz)
 2500
 # C: transmission capacity of transponders (Ghz) // apply non-zero only to time fragmentation
-0
+2500
 # M: maximum allowed number of reserved mini-grids
 0
 # Policy {MinLP => 1} {MinHops => 2} {MinTHP => 3} {LB => 4}{SFI => 5} {TFI => 6} {TFI-SFI => 7} {FF => 8}
-6
+7
 # Seeds
 01100100 10010110 10001111 01010001 00010110 00010010 10110100 11011001 10011100 11100110 11111001 00001101 01000111 01100011 01110100 01011100
 01100000 10010111 10010010 00111000 10010010 01100101 11000111 11000101 10011010 11000001 01101001 10100010 11011110 01100110 01000110 00011100

@@ -190,7 +190,7 @@ public class FiberLink {
                 htArray[i] = 1 - holdingTime.get(i)/max1; //Math.pow((1 - holdingTime.get(i)/max1), 2);
                 timefragmentationIndex += htArray[i];
             }
-            timefragmentationIndex = timefragmentationIndex / Math.pow(htArray.length,2);
+            timefragmentationIndex = timefragmentationIndex /(htArray.length) ;
         }
             return timefragmentationIndex ;
     }
