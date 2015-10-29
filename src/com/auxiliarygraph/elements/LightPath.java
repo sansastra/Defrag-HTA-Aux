@@ -3,6 +3,7 @@ package com.auxiliarygraph.elements;
 import com.auxiliarygraph.NetworkState;
 import com.graph.elements.edge.EdgeElement;
 import com.graph.path.PathElement;
+import com.simulator.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ public class LightPath {
     private PathElement pathElement;
     private List<Integer> miniGridIds;
     private Map<Double, Connection> connectionMap;
+    private Map<Integer, Connection> reconfigMap;
     private static final Logger log = LoggerFactory.getLogger(LightPath.class);
     private final int GUARD_BANDS;
 
@@ -23,6 +25,7 @@ public class LightPath {
         this.pathElement = pathElement;
         this.miniGridIds = new ArrayList<>();
         this.connectionMap = new HashMap<>();
+        this.reconfigMap = new HashMap<>();
         this.GUARD_BANDS = bwWithGB - bw;
 
         for (int i = initialMiniGrid; i < initialMiniGrid + bwWithGB; i++)
@@ -37,6 +40,7 @@ public class LightPath {
             for (int i = bw; i < bwWithGB; i++)
                 NetworkState.getFiberLinksMap().get(e.getEdgeID()).setGuardBandMiniGrid(miniGridIds.get(i));
         }
+        reconfigMap.put(0,connection);
     }
 
     public PathElement getPathElement() {
@@ -45,7 +49,7 @@ public class LightPath {
 
     public int getLPbandwidth(){return miniGridIds.size();}
 
-    public void expandLightPathOnLeftSide(int bw, Connection connection) {
+    public boolean expandLightPathOnLeftSide(int bw, Connection connection) {
 
         int firstFreeMiniGrid = miniGridIds.get(0) - 1;
         for (int i = firstFreeMiniGrid; i > firstFreeMiniGrid - bw; i--) {
@@ -56,9 +60,10 @@ public class LightPath {
         Collections.sort(miniGridIds);
 
         connectionMap.put(connection.getStartingTime(), connection);
+        return getIfReconfigured(bw,connection);
     }
 
-    public void expandLightPathOnRightSide(int bw, Connection connection) {
+    public boolean expandLightPathOnRightSide(int bw, Connection connection) {
 
         /** Expand the fiber links */
         int miniGrid = miniGridIds.get(miniGridIds.size() - 1 - GUARD_BANDS) + 1;
@@ -80,6 +85,33 @@ public class LightPath {
         /** Add the connection*/
         connectionMap.put(connection.getStartingTime(), connection);
 
+        // get the number of reconfiguration
+
+        return getIfReconfigured(bw,connection);
+
+    }
+
+    public boolean getIfReconfigured (int bw, Connection connection){
+        boolean reconfigured =false;
+        Map<Integer, Connection> reconfigMapTemp = new HashMap<>();
+       // reconfigMapTemp = reconfigMap;
+        for (int i = 0; i <reconfigMap.size() ; i++) {
+            if (reconfigMap.get(i).getResidualTime() < connection.getHoldingTime()) {
+                reconfigured = true;
+                reconfigMapTemp.put(i, connection);
+                for (int j = i; j < reconfigMap.size(); j++)
+                    reconfigMapTemp.put(j+1, reconfigMap.get(j));
+
+                break;
+            }
+            else
+                reconfigMapTemp.put(i, reconfigMap.get(i));
+        }
+        if(reconfigMapTemp.size()==reconfigMap.size())
+            reconfigMapTemp.put(reconfigMap.size(),connection);
+        // update reconfiguration map
+        reconfigMap = reconfigMapTemp;
+        return reconfigured;
     }
 
     public boolean canBeExpandedRight(int bw) {
@@ -176,6 +208,8 @@ public class LightPath {
             miniGridIds.remove(miniGridIds.size() - 1);
 
     }
+
+
 
     public int getFirstMiniGrid() {
         return miniGridIds.get(0);

@@ -50,8 +50,8 @@ public class Connection {
      * Function to get the residual time until the connection finalizes
      */
     public double getResidualTime() {
-        if (isUnKnown)
-            log.error("Getting residual time for an unknown connection");
+//        if (isUnKnown)
+//            log.error("Getting residual time for an unknown connection");
         return (startingTime + holdingTime) - Scheduler.currentTime();
     }
 

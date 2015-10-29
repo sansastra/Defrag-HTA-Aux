@@ -37,7 +37,7 @@ public class Results {
                     + SimulatorParameters.get_runNumber(), false);
             blockingWriteFile.write(MY_FORMAT.format(date) + "\n");
             blockingWriteFile.write("Blocking per SRC-DST nodes\n\n");
-            blockingWriteFile.write("S	D	T	Req	Blocked	U	SimTime\n");
+            blockingWriteFile.write("S	D	T	Req	Blocked	U	SimTime   Reconfig \n");
 
             linkUtilizationWriteFile = new WriteFile("LinkUtilization-run-"
                     + SimulatorParameters.get_runNumber(), false);
@@ -119,10 +119,13 @@ public class Results {
                         + "	"
                         + flow.getListOfCounters().get(i).getBlockingCounterForUnknownHT()
                         + "	"
-                        + Scheduler.currentTime() + "\n");
+                        + Scheduler.currentTime()
+                        + "  "
+                        + flow.getListOfCounters().get(i).getReconfigCounter() +"\n");
                 flow.getListOfCounters().get(i).resetBlockingCounter();
                 flow.getListOfCounters().get(i).resetBlockingCounterForUnknownHT();
                 flow.getListOfCounters().get(i).resetFlowRequestCounter();
+                flow.getListOfCounters().get(i).resetReconfigCounter();
             }
         }
     }

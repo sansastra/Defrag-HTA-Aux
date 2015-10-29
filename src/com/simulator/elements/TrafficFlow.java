@@ -65,6 +65,10 @@ public class TrafficFlow {
             listOfCounters.get(portType).increaseBlockingCounterForUnknownHT();
     }
 
+    public void increaseReconfigurationCounter(int portType, int bw) {
+        listOfCounters.get(portType).increaseReconfigCounter (bw);
+    }
+
     /**
      * Getters
      */

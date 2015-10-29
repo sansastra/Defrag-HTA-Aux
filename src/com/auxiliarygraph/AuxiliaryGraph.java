@@ -33,6 +33,7 @@ public class AuxiliaryGraph {
     private double currentTime;
     private double ht;
     private boolean feature;
+    private boolean reconfigured;
     private static final Logger log = LoggerFactory.getLogger(AuxiliaryGraph.class);
 
     /**
@@ -51,20 +52,22 @@ public class AuxiliaryGraph {
         /** Search for candidate paths between S and D*/
         List<Path> listOfCandidatePaths = NetworkState.getListOfPaths(src, dst);
 
-        /** For each candidate path, create new spectrum edges*/
-        for (Path p : listOfCandidatePaths)
-            for (EdgeElement e : p.getPathElement().getTraversedEdges()) {
-                List<Integer> freeMiniGrids = NetworkState.getFiberLink(e.getEdgeID()).getFreeMiniGrids(bwWithGB);
-               // if (freeMiniGrids.size() >= bwWithGB)
-                    for (Integer i : freeMiniGrids)
-                        listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(),bwWithGB, ht));
-            }
-
         /** For each pre-existing lightpath ...*/
         for (LightPath lp : NetworkState.getListOfLightPaths(listOfCandidatePaths))
         /** If the lightpath can carry more traffic allocating more mini grids...*/
             if (lp.canBeExpandedLeft(bw) || lp.canBeExpandedRight(bw))
                 listOfLPE.add(new LightPathEdge(lp));
+        if (listOfLPE.size()==0) {
+            /** For each candidate path, create new spectrum edges*/
+            for (Path p : listOfCandidatePaths)
+                for (EdgeElement e : p.getPathElement().getTraversedEdges()) {
+                    List<Integer> freeMiniGrids = NetworkState.getFiberLink(e.getEdgeID()).getFreeMiniGrids(bwWithGB);
+                    // if (freeMiniGrids.size() >= bwWithGB)
+                    for (Integer i : freeMiniGrids)
+                        listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(), bwWithGB, ht));
+                }
+        }
+
     }
 
     public boolean runShortestPathAlgorithm(List<Path> listOfCandidatePaths) {
@@ -163,9 +166,6 @@ public class AuxiliaryGraph {
 
         Set<LightPath> newLightPaths = new HashSet<>();
         List<SpectrumEdge> selectedSpectrumEdges = new ArrayList<>();
-
-        newConnection = new Connection(currentTime, ht, bw, feature, miniGrid);
-
         List<LightPathEdge> selectedLightPathEdges = getLightPathEdges(path, miniGrid);
 
         SpectrumEdge se;
@@ -176,6 +176,8 @@ public class AuxiliaryGraph {
 
         /** If the path contains spectrum edges then establish new lightpath **/
         if (!selectedSpectrumEdges.isEmpty()) {
+            reconfigured = false;
+            newConnection = new Connection(currentTime, ht, bw, feature, miniGrid);
             List<VertexElement> vertexes = new ArrayList<>();
             if (selectedSpectrumEdges.size() == 1) {
                 vertexes.add(selectedSpectrumEdges.get(0).getEdgeElement().getSourceVertex());
@@ -213,11 +215,14 @@ public class AuxiliaryGraph {
         /** Expand existing lightpaths*/
         if (!selectedLightPathEdges.isEmpty())
             for (LightPathEdge lightPathEdge : selectedLightPathEdges)
-                if (lightPathEdge.getLightPath().canBeExpandedLeft(bw))
-                    lightPathEdge.getLightPath().expandLightPathOnLeftSide(bw, newConnection);
-                else
-                    lightPathEdge.getLightPath().expandLightPathOnRightSide(bw, newConnection);
-
+                if (lightPathEdge.getLightPath().canBeExpandedLeft(bw)) {
+                    newConnection = new Connection(currentTime, ht, bw, feature, miniGrid-bw);
+                    reconfigured = lightPathEdge.getLightPath().expandLightPathOnLeftSide(bw, newConnection);
+                }
+                else {
+                    newConnection = new Connection(currentTime, ht, bw, feature, miniGrid+lightPathEdge.getLightPath().getLPbandwidth()-NetworkState.getNumOfMiniGridsPerGB());
+                   reconfigured = lightPathEdge.getLightPath().expandLightPathOnRightSide(bw, newConnection);
+                }
         NetworkState.getListOfLightPaths().addAll(newLightPaths);
     }
 
@@ -262,11 +267,13 @@ public class AuxiliaryGraph {
         return newConnection;
     }
 
-
+    public boolean ifReconfigured(){return reconfigured;}
     /**
      * Experimental
      */
-
+//    public LightPath connectionAtLightpathOrSpectrumEdge(){
+//        if( spectrumEdgeOrLightpathEdge)
+//            return getNewConnection().;}
     public double applyCorrectorFactor(Path p, int miniGrid) {
 
         double correctorFactor = 0;

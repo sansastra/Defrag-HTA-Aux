@@ -39,7 +39,7 @@ public class SimulatorParameters {
     private static int _runNumber = -1;
     private static int policy;
     private static int capacity;
-    private static int blockingCounter = 0;
+    private static int reconfigCounter = 0;
     private static final Logger log = LoggerFactory.getLogger(SimulatorParameters.class);
 
     /**
@@ -223,14 +223,12 @@ public class SimulatorParameters {
     }
     public static int getTotalCapacity(){return capacity ;}
 
-    public static int getBlockingCounter() {
-        return blockingCounter;
-    }
-    public static int increaseBlockingCounter() {
-        return blockingCounter++;
+    public static int getReconfigurationCounter() {
+        return reconfigCounter;
     }
 
-    public static void setBlockingCounter(int blockingCounter) {
-        SimulatorParameters.blockingCounter = blockingCounter;
+
+    public static void setReconfigCounter(int reconfigCounter) {
+        SimulatorParameters.reconfigCounter = reconfigCounter;
     }
 }

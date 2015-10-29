@@ -14,12 +14,16 @@ public class Counter {
     /** TrafficClass distribution*/
     private int portType;
 
+    // counter to count total number of reconfiguration
+    private int reconfigCounter;
+
     /** Constructor class*/
     public Counter(int portType) {
         this.portType = portType;
         this.blockingCounter = 0;
         this.blockingCounterForUnknownHT = 0;
         this.flowRequestCounter = 0;
+        this.reconfigCounter =0;
     }
 
     /** Methods to increase the counters*/
@@ -31,6 +35,9 @@ public class Counter {
         blockingCounterForUnknownHT++;
     }
 
+    public void increaseReconfigCounter(int bw){
+        reconfigCounter += bw;
+    }
     public void increaseFlowRequestCounter(){
         flowRequestCounter++;
     }
@@ -45,6 +52,7 @@ public class Counter {
     public void resetFlowRequestCounter(){
         flowRequestCounter = 0;
     }
+    public void resetReconfigCounter(){reconfigCounter=0;}
 
     /** Getters*/
     public int getPortType() {
@@ -63,5 +71,5 @@ public class Counter {
         return flowRequestCounter;
     }
 
-
+    public int getReconfigCounter() {return reconfigCounter;}
 }
