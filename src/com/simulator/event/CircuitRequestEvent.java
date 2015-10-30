@@ -65,8 +65,8 @@ public class CircuitRequestEvent extends Event {
         if (auxiliaryGraph.runShortestPathAlgorithm(selectedFlow.getListOfPaths())) {
             Event event = new CircuitReleaseEvent(new Entity(holdingTime), generator, selectedFlow, auxiliaryGraph.getNewConnection());
             Scheduler.schedule(event, holdingTime);
-            if(auxiliaryGraph.ifReconfigured())
-                selectedFlow.increaseReconfigurationCounter(trafficClass.getType(), auxiliaryGraph.getNewConnection().getBw());
+            if(auxiliaryGraph.numberOfReconfiguration()!=0)
+                selectedFlow.increaseReconfigurationCounter(trafficClass.getType(), auxiliaryGraph.numberOfReconfiguration());
             log.debug("Added release event: " + generator.getVertex().getVertexID() + "-" + selectedFlow.getDstNode().getVertexID());
 //            Results.writeHoldingTime(generator,selectedFlow,trafficClass.getType(),isUnKnown,holdingTime);
         } else { /**if not, increase blocking counter*/

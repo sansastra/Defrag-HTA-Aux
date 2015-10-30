@@ -49,7 +49,7 @@ public class LightPath {
 
     public int getLPbandwidth(){return miniGridIds.size();}
 
-    public boolean expandLightPathOnLeftSide(int bw, Connection connection) {
+    public int expandLightPathOnLeftSide(int bw, Connection connection) {
 
         int firstFreeMiniGrid = miniGridIds.get(0) - 1;
         for (int i = firstFreeMiniGrid; i > firstFreeMiniGrid - bw; i--) {
@@ -60,10 +60,10 @@ public class LightPath {
         Collections.sort(miniGridIds);
 
         connectionMap.put(connection.getStartingTime(), connection);
-        return getIfReconfigured(bw,connection);
+        return getIfReconfigured(true,connection);
     }
 
-    public boolean expandLightPathOnRightSide(int bw, Connection connection) {
+    public int expandLightPathOnRightSide(int bw, Connection connection) {
 
         /** Expand the fiber links */
         int miniGrid = miniGridIds.get(miniGridIds.size() - 1 - GUARD_BANDS) + 1;
@@ -87,17 +87,21 @@ public class LightPath {
 
         // get the number of reconfiguration
 
-        return getIfReconfigured(bw,connection);
+        return getIfReconfigured(false, connection);
 
     }
 
-    public boolean getIfReconfigured (int bw, Connection connection){
-        boolean reconfigured =false;
+    public int getIfReconfigured (boolean left, Connection connection){
+        int reconfigured =0;
         Map<Integer, Connection> reconfigMapTemp = new HashMap<>();
        // reconfigMapTemp = reconfigMap;
         for (int i = 0; i <reconfigMap.size() ; i++) {
             if (reconfigMap.get(i).getResidualTime() < connection.getHoldingTime()) {
-                reconfigured = true;
+                if(left)
+                    reconfigured = i;
+                else
+                reconfigured = reconfigMap.size()-i;
+
                 reconfigMapTemp.put(i, connection);
                 for (int j = i; j < reconfigMap.size(); j++)
                     reconfigMapTemp.put(j+1, reconfigMap.get(j));

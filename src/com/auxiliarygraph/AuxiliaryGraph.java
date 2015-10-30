@@ -33,7 +33,7 @@ public class AuxiliaryGraph {
     private double currentTime;
     private double ht;
     private boolean feature;
-    private boolean reconfigured;
+    private int reconfigured;
     private static final Logger log = LoggerFactory.getLogger(AuxiliaryGraph.class);
 
     /**
@@ -176,7 +176,7 @@ public class AuxiliaryGraph {
 
         /** If the path contains spectrum edges then establish new lightpath **/
         if (!selectedSpectrumEdges.isEmpty()) {
-            reconfigured = false;
+            reconfigured = 0;
             newConnection = new Connection(currentTime, ht, bw, feature, miniGrid);
             List<VertexElement> vertexes = new ArrayList<>();
             if (selectedSpectrumEdges.size() == 1) {
@@ -267,7 +267,7 @@ public class AuxiliaryGraph {
         return newConnection;
     }
 
-    public boolean ifReconfigured(){return reconfigured;}
+    public int numberOfReconfiguration(){return reconfigured;}
     /**
      * Experimental
      */
