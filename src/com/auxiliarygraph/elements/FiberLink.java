@@ -147,6 +147,7 @@ public class FiberLink {
         int usedMiniGrids = 0;
         int freeMiniGrids = 0;
         double fragmentationIndex =0;
+        int maxUsedGrid = spectrumLayerIndex + bwWithGB-1;
 
         for (Map.Entry<Integer, Integer> entry : miniGrids.entrySet())
             if (entry.getValue() == 0 && !(((entry.getKey()>= spectrumLayerIndex))&&(entry.getKey()< spectrumLayerIndex + bwWithGB)))
@@ -155,13 +156,16 @@ public class FiberLink {
                 fragmentationIndex += (double)(freeMiniGrids*(freeMiniGrids+1)*(freeMiniGrids+2)) ;
                 usedMiniGrids++;
                 freeMiniGrids = 0;
+                // new measure
+                if (entry.getKey()> maxUsedGrid)
+                    maxUsedGrid= entry.getKey();
             }
         fragmentationIndex += (double)(freeMiniGrids*(freeMiniGrids+1)*(freeMiniGrids+2)) ;
         freeMiniGrids = totalNumberOfMiniGrids - usedMiniGrids ;
         fragmentationIndex = fragmentationIndex/(freeMiniGrids*(freeMiniGrids+1)*(freeMiniGrids+2));
-        if (fragmentationIndex > 1)
-            log.error("BUG: fragmentation index is greater than 1");
-        return (1-fragmentationIndex);
+//        if (fragmentationIndex > 1)
+//            log.error("BUG: fragmentation index is greater than 1");
+        return (1-fragmentationIndex)*(maxUsedGrid/totalNumberOfMiniGrids);
     }
 
     public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bwWithGB,double ht) {

@@ -66,7 +66,7 @@ public class Weights {
                 lpeFactor1 = 0;
                 lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
-                timeFactor =0.5;
+                timeFactor =0.7;
                 fragmentFactor= 1- timeFactor;
                 break;
             /** FirstFit*/
@@ -85,7 +85,7 @@ public class Weights {
 //            seFactor = NetworkState.getFiberLink(edgeID).getNumberOfMiniGridsUsed();
 
         return (timeFactor*(NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht))+
-                1E5*fragmentFactor* (NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB))) +1e-5 * spectrumLayerIndex;
+                fragmentFactor* (NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB))) +1e-5 * spectrumLayerIndex;
         //return seFactor + 1e-5 * spectrumLayerIndex;
     }
 
