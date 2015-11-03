@@ -66,7 +66,7 @@ public class Weights {
                 lpeFactor1 = 0;
                 lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
-                timeFactor =0.7;
+                timeFactor =0.5;
                 fragmentFactor= 1- timeFactor;
                 break;
             /** FirstFit*/

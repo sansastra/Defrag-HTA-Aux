@@ -165,7 +165,7 @@ public class FiberLink {
         fragmentationIndex = fragmentationIndex/(freeMiniGrids*(freeMiniGrids+1)*(freeMiniGrids+2));
 //        if (fragmentationIndex > 1)
 //            log.error("BUG: fragmentation index is greater than 1");
-        return (1-fragmentationIndex)*(maxUsedGrid/totalNumberOfMiniGrids);
+        return (1-fragmentationIndex);//*(maxUsedGrid/totalNumberOfMiniGrids);
     }
 
     public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bwWithGB,double ht) {
