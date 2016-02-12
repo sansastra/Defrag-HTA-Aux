@@ -10,6 +10,8 @@ import com.inputdata.InputParameters;
 import com.inputdata.elements.Source;
 import com.inputdata.reader.ImportTopologyFromSNDFile;
 import com.inputdata.reader.ReadFile;
+import com.rng.Distribution;
+import com.rng.distribution.ExponentialDistribution;
 import com.simulator.Scheduler;
 import com.simulator.elements.Generator;
 import org.slf4j.Logger;
@@ -40,9 +42,12 @@ public class SimulatorParameters {
     private static int policy;
     private static int capacity;
     private static int reconfigCounter = 0;
+
     private static final Logger log = LoggerFactory.getLogger(SimulatorParameters.class);
 
+
     /**
+
      * Function to start a set of simulations
      */
     public static void startSimulation() {
@@ -80,8 +85,7 @@ public class SimulatorParameters {
         for (Source s : InputParameters.getListOfSources())
             listOfGenerators.add(new Generator(s.getVertex(), s.getListOfTrafficDemands(), s.getArrivalRate(), s.getTrafficClassProb(), s.getDestinationProb()));
         listOfGenerators.forEach(Generator::initialize);
-
-        /** Run the simulation */
+                /** Run the simulation */
         Scheduler.startSim();
     }
 
@@ -226,6 +230,8 @@ public class SimulatorParameters {
     public static int getReconfigurationCounter() {
         return reconfigCounter;
     }
+
+
 
 
     public static void setReconfigCounter(int reconfigCounter) {

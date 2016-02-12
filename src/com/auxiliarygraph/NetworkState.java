@@ -27,6 +27,7 @@ public class NetworkState {
     private static int numOfMiniGridsPerGB;
     private static double totalNumberOfSlots;
 
+
     private static final Logger log = LoggerFactory.getLogger(NetworkState.class);
 
     public NetworkState(Gcontroller graph, double granularity, int capacity, int txCapacityOfTransponders, int numOfMiniGridsPerGB, Set<PathElement> setOfPathElements, int policy) {

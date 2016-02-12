@@ -61,12 +61,20 @@ public class TrafficFlow {
      */
     public void increaseBlockingCounter(int portType, boolean isNotKnown) {
         listOfCounters.get(portType).increaseBlockingCounter();
-        if (isNotKnown)
-            listOfCounters.get(portType).increaseBlockingCounterForUnknownHT();
+//        if (isNotKnown)
+//            listOfCounters.get(portType).increaseBlockingCounterForUnknownHT();
     }
 
-    public void increaseReconfigurationCounter(int portType, int bw) {
-        listOfCounters.get(portType).increaseReconfigCounter (bw);
+//    public void increaseBlockingCounter(int portType, boolean blockedDueToFragment) {
+//        listOfCounters.get(portType).increaseBlockingCounter();
+//        if (blockedDueToFragment) // if blocked due to  fragmentation or resource unavailability
+//            listOfCounters.get(portType).increaseFragmentBlockingCounter();
+//        else
+//            listOfCounters.get(portType).increaseResourceBlockingCounter();
+//    }
+
+    public void increaseReconfigurationCounter(int portType, int nc) {
+        listOfCounters.get(portType).increaseReconfigCounter (nc);
     }
 
     /**

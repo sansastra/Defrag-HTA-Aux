@@ -34,6 +34,7 @@ public class AuxiliaryGraph {
     private double ht;
     private boolean feature;
     private int reconfigured;
+   // private boolean blockedDueToFragment;
     private static final Logger log = LoggerFactory.getLogger(AuxiliaryGraph.class);
 
     /**
@@ -47,7 +48,7 @@ public class AuxiliaryGraph {
         this.currentTime = currentTime;
         this.ht = ht;
         this.feature = feature;
-
+     //   blockedDueToFragment = false;
 
         /** Search for candidate paths between S and D*/
         List<Path> listOfCandidatePaths = NetworkState.getListOfPaths(src, dst);
@@ -58,14 +59,20 @@ public class AuxiliaryGraph {
             if (lp.canBeExpandedLeft(bw) || lp.canBeExpandedRight(bw))
                 listOfLPE.add(new LightPathEdge(lp));
         if (listOfLPE.size()==0) {
+           // int count1;
             /** For each candidate path, create new spectrum edges*/
-            for (Path p : listOfCandidatePaths)
+            for (Path p : listOfCandidatePaths) {
+             //   count1=0;
                 for (EdgeElement e : p.getPathElement().getTraversedEdges()) {
                     List<Integer> freeMiniGrids = NetworkState.getFiberLink(e.getEdgeID()).getFreeMiniGrids(bwWithGB);
-                    // if (freeMiniGrids.size() >= bwWithGB)
+//                    if (NetworkState.getFiberLink(e.getEdgeID()).getNumberOfFreeMiniGrids() >= bwWithGB)
+//                        count1++;
                     for (Integer i : freeMiniGrids)
-                        listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(), bwWithGB, ht));
+                        listOfSE.add(new SpectrumEdge(e, i, p.getPathElement().getTraversedEdges().size(), bwWithGB, ht, feature));
                 }
+//                if (count1 == p.getPathElement().getTraversedEdges().size())
+//                    blockedDueToFragment = true;
+            }
         }
 
     }
@@ -268,6 +275,11 @@ public class AuxiliaryGraph {
     }
 
     public int numberOfReconfiguration(){return reconfigured;}
+
+//    public boolean isBlockedDueToFragment() {
+//        return blockedDueToFragment;
+//    }
+
     /**
      * Experimental
      */

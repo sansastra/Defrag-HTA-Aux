@@ -70,8 +70,10 @@ public class CircuitRequestEvent extends Event {
             log.debug("Added release event: " + generator.getVertex().getVertexID() + "-" + selectedFlow.getDstNode().getVertexID());
 //            Results.writeHoldingTime(generator,selectedFlow,trafficClass.getType(),isUnKnown,holdingTime);
         } else { /**if not, increase blocking counter*/
-            selectedFlow.increaseBlockingCounter(trafficClass.getType(), isUnKnown);
+            selectedFlow.increaseBlockingCounter(trafficClass.getType(), isUnKnown); //auxiliaryGraph.isBlockedDueToFragment()
             log.debug("Connection is blocked");
+            //increaseCounters(selectedFlow, this.generator, this.trafficClass);
+
             /** test ILP */
 //           if(SimulatorParameters.getBlockingCounter() < 2)
 //               SimulatorParameters.increaseBlockingCounter();

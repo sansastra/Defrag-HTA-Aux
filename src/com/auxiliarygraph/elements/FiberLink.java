@@ -3,6 +3,7 @@ package com.auxiliarygraph.elements;
 import com.auxiliarygraph.AuxiliaryGraph;
 import com.auxiliarygraph.NetworkState;
 import com.graph.elements.edge.EdgeElement;
+import com.inputdata.InputParameters;
 import com.launcher.Launcher;
 import com.launcher.SimulatorParameters;
 import org.slf4j.Logger;
@@ -168,15 +169,15 @@ public class FiberLink {
         return (1-fragmentationIndex);//*(maxUsedGrid/totalNumberOfMiniGrids);
     }
 
-    public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bwWithGB,double ht) {
+    public double getLinkTimeFragmentationIndex(int spectrumLayerIndex, int bwWithGB,double ht, boolean feature, double meanHT ) {
         double timefragmentationIndex = 0.0;
-        if (miniGrids.size() > 0) {
+        //if (miniGrids.size() > 0) {
             int start = getStartingIndexOfBlock(spectrumLayerIndex);
             int end = getEndingIndexOfBlock(spectrumLayerIndex, bwWithGB);
 
             List<Double> holdingTime;
             if (start != end - bwWithGB + 1) {
-                holdingTime = getHoldingTimeOfBlock(start, end);
+                holdingTime = getHoldingTimeOfBlock(start, end, meanHT);
 //                if (holdingTime.size() != end - start - bwWithGB + 1) {
 //                    log.error("BUG: fragmentation time block indices is in error 2");
 //                    holdingTime = getHoldingTimeOfBlock(start, end); // debug
@@ -185,8 +186,14 @@ public class FiberLink {
             } else
                 return 100; //*timefragmentationIndex; // when this request is alone
 
+        if(feature) {
             for (int i = 0; i < bwWithGB; i++)
                 holdingTime.add(ht);
+        }else {
+            for (int i = 0; i < bwWithGB; i++)
+                holdingTime.add(meanHT);
+        }
+
 
             double[] htArray = new double[holdingTime.size()];
             double max1 = Collections.max(holdingTime);
@@ -195,7 +202,7 @@ public class FiberLink {
                 timefragmentationIndex += htArray[i];
             }
             timefragmentationIndex = timefragmentationIndex /(htArray.length) ;
-        }
+        //}
             return timefragmentationIndex ;
     }
 
@@ -230,7 +237,7 @@ public class FiberLink {
         return temp;
     }
 
-    public List<Double> getHoldingTimeOfBlock(int start,int end) {
+    public List<Double> getHoldingTimeOfBlock(int start,int end, double meanHT) {
         List<LightPath> listOfLPs = NetworkState.getListOfTraversingLightPaths(this.edgeElement);
         List<Double> holdingTime = new ArrayList<>();
         boolean check;
@@ -243,7 +250,10 @@ public class FiberLink {
                         max=0;
                         for (Map.Entry<Double, Connection> entry : lp.getConnectionMap().entrySet()) {
                             for (int i = 0; i < entry.getValue().getBw(); i++) {
+                                if(entry.getValue().isUnKnown())
                                    holdingTime.add(entry.getKey());
+                                else
+                                    holdingTime.add(meanHT);
                                 if(entry.getKey()>max)
                                     max = entry.getKey();
                                 }
@@ -270,7 +280,7 @@ public class FiberLink {
     public void setReservedMiniGrid(int id) {
         miniGrids.replace(id, miniGrids.get(id), 3);
     }
-
+    public int getNumberOfFreeMiniGrids() {return totalNumberOfMiniGrids - getNumberOfMiniGridsUsed();}
     public int getTotalNumberOfMiniGrids() {
         return totalNumberOfMiniGrids;
     }

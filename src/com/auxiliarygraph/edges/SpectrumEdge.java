@@ -12,10 +12,12 @@ public class SpectrumEdge {
     private int spectrumLayerIndex;
     private EdgeElement edgeElement;
     private double cost;
-    public SpectrumEdge(EdgeElement edgeElement, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB, double ht) {
+    boolean isUnknown; //true means connections with known holding time
+    public SpectrumEdge(EdgeElement edgeElement, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB, double ht, boolean feature) {
         this.edgeElement = edgeElement;
         this.spectrumLayerIndex = spectrumLayerIndex;
-        cost = Weights.getSpectrumEdgeCost(edgeElement.getEdgeID(), spectrumLayerIndex, hopsOfThePath,bwWithGB,ht);
+        isUnknown = feature;
+        cost = Weights.getSpectrumEdgeCost(edgeElement.getEdgeID(), spectrumLayerIndex, hopsOfThePath,bwWithGB,ht, isUnknown);
 
     }
 

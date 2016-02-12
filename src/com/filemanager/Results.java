@@ -37,7 +37,7 @@ public class Results {
                     + SimulatorParameters.get_runNumber(), false);
             blockingWriteFile.write(MY_FORMAT.format(date) + "\n");
             blockingWriteFile.write("Blocking per SRC-DST nodes\n\n");
-            blockingWriteFile.write("S	D	T	Req	Blocked	U	SimTime   Reconfig \n");
+            blockingWriteFile.write("S	D	T	Req	Blocked	Resource  Fragment	SimTime   Reconfig \n");
 
             linkUtilizationWriteFile = new WriteFile("LinkUtilization-run-"
                     + SimulatorParameters.get_runNumber(), false);
@@ -46,18 +46,18 @@ public class Results {
             linkUtilizationWriteFile
                     .write("Fiber	Requests	SimTime	Utilization(%)\n");
 
-            interArrivalWriteFile = new WriteFile(
-                    "MeanInterarrivalTimes-run-" + SimulatorParameters.get_runNumber(),
-                    false);
-            interArrivalWriteFile.write(MY_FORMAT.format(date) + "\n");
-            interArrivalWriteFile.write("Requests \n\n");
-            interArrivalWriteFile.write("S	D	T	lambda(i)	simTime\n");
-
-            holdingTimeWriteFile = new WriteFile("MeanHoldingTimes-run-"
-                    + SimulatorParameters.get_runNumber(), false);
-            holdingTimeWriteFile.write(MY_FORMAT.format(date) + "\n");
-            holdingTimeWriteFile.write("Releases \n\n");
-            holdingTimeWriteFile.write("S	D	T	K/U	ht(i)	simTime\n");
+//            interArrivalWriteFile = new WriteFile(
+//                    "MeanInterarrivalTimes-run-" + SimulatorParameters.get_runNumber(),
+//                    false);
+//            interArrivalWriteFile.write(MY_FORMAT.format(date) + "\n");
+//            interArrivalWriteFile.write("Requests \n\n");
+//            interArrivalWriteFile.write("S	D	T	lambda(i)	simTime\n");
+//
+//            holdingTimeWriteFile = new WriteFile("MeanHoldingTimes-run-"
+//                    + SimulatorParameters.get_runNumber(), false);
+//            holdingTimeWriteFile.write(MY_FORMAT.format(date) + "\n");
+//            holdingTimeWriteFile.write("Releases \n\n");
+//            holdingTimeWriteFile.write("S	D	T	K/U	ht(i)	simTime\n");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,13 +117,18 @@ public class Results {
                         + "	"
                         + flow.getListOfCounters().get(i).getBlockingCounter()
                         + "	"
-                        + flow.getListOfCounters().get(i).getBlockingCounterForUnknownHT()
+//                        + flow.getListOfCounters().get(i).getResourceBlockingCounter()
+//                        + "	"
+//                        + flow.getListOfCounters().get(i).getFragmentBlockingCounter()
+                       // + flow.getListOfCounters().get(i).getBlockingCounterForUnknownHT()
                         + "	"
                         + Scheduler.currentTime()
                         + "  "
                         + flow.getListOfCounters().get(i).getReconfigCounter() +"\n");
                 flow.getListOfCounters().get(i).resetBlockingCounter();
-                flow.getListOfCounters().get(i).resetBlockingCounterForUnknownHT();
+//                flow.getListOfCounters().get(i).resetResourceBlockingCounter();
+//                flow.getListOfCounters().get(i).resetFragmentBlockingCounter();
+               // flow.getListOfCounters().get(i).resetBlockingCounterForUnknownHT();
                 flow.getListOfCounters().get(i).resetFlowRequestCounter();
                 flow.getListOfCounters().get(i).resetReconfigCounter();
             }

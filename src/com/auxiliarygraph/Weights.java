@@ -1,6 +1,7 @@
 package com.auxiliarygraph;
 
 import com.auxiliarygraph.elements.LightPath;
+import com.inputdata.InputParameters;
 
 /**
  * Created by Fran on 7/3/2015.
@@ -14,11 +15,11 @@ public class Weights {
     private static double lpeFactor2;
     private static double timeFactor;
     private static double fragmentFactor;
-
+    private static double meanHT;
     public Weights(int policy) {
 
         POLICY = policy;
-
+        meanHT = InputParameters.getMeanHoldingTimes();
         switch (POLICY) {
             /** MinLP */
             case 1:
@@ -66,8 +67,8 @@ public class Weights {
                 lpeFactor1 = 0;
                 lpeFactor2 = 1;
                 transponderEdgeCost = 1e9;
-                timeFactor =0.5;
-                fragmentFactor= 1- timeFactor;
+                timeFactor =0.1;
+                fragmentFactor= 0.9;
                 break;
             /** FirstFit*/
             case 8:
@@ -78,15 +79,27 @@ public class Weights {
         }
     }
 
-    public static double getSpectrumEdgeCost(String edgeID, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB, double ht) {
-        if (POLICY == 8)
-            return spectrumLayerIndex ;
-//        if (POLICY == 4)
-//            seFactor = NetworkState.getFiberLink(edgeID).getNumberOfMiniGridsUsed();
+    public static double getSpectrumEdgeCost(String edgeID, int spectrumLayerIndex, int hopsOfThePath, int bwWithGB, double ht, boolean feature) {
+        switch (POLICY){
+            case  5:
+                seFactor = NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB);
+                break;
+            case 6:
+                seFactor = NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht, feature,meanHT);
+                break;
+            case 7:
+                seFactor =  (timeFactor*(NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht,feature,meanHT))+
+                    fragmentFactor* (NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB)));
+                break;
+            case 8:
+                seFactor = spectrumLayerIndex ;
+                break;
+            default:
+                seFactor = 1;
+        }
 
-        return (timeFactor*(NetworkState.getFiberLink(edgeID).getLinkTimeFragmentationIndex(spectrumLayerIndex, bwWithGB,ht))+
-                fragmentFactor* (NetworkState.getFiberLink(edgeID).getLinkFragmentationIndex(spectrumLayerIndex, bwWithGB))) +1e-5 * spectrumLayerIndex;
-        //return seFactor + 1e-5 * spectrumLayerIndex;
+
+        return seFactor + 1e-5 * spectrumLayerIndex;
     }
 
     public static double getLightPathEdgeCost(LightPath lp) {

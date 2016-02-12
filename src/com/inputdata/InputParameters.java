@@ -27,6 +27,7 @@ public class InputParameters {
     private static String arrivalProcess;
     private static List<TrafficDemand> listOfTrafficDemands;
     private static List<Source> listOfSources;
+    private static double meanHoldingTimes;
 
     /**
      * Constructor class
@@ -61,6 +62,7 @@ public class InputParameters {
             String[] ht = holdingTimes[i].split("-");
             listOfTrafficClasses.add(new TrafficClass(i, Double.parseDouble(bandwidths[i]), ht[0], Double.parseDouble(ht[1]), Double.parseDouble(ht[2]), Double.parseDouble(connectionFeature[i]), Double.parseDouble(scaling[i + (numberOfPortClasses* SimulatorParameters.get_runNumber())])));
 //            listOfTrafficClasses.add(new TrafficClass(i, Double.parseDouble(bandwidths[i]), ht[0], Double.parseDouble(ht[1]), Double.parseDouble(ht[2]), Double.parseDouble(connectionFeature[i]), Double.parseDouble(scaling[i + ((SimulatorParameters.getNumberOfRuns() - 1)* SimulatorParameters.get_runNumber())])));
+        meanHoldingTimes = Double.parseDouble(ht[1]);
         }
     }
 
@@ -172,6 +174,10 @@ public class InputParameters {
      */
     public static double getArrivalCoefficient() {
         return arrivalCoefficient;
+    }
+
+    public static double getMeanHoldingTimes() {
+        return meanHoldingTimes;
     }
 
     /**
